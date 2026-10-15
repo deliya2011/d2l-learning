@@ -3,7 +3,7 @@
 用法：
     just check a0                      # 查 work/a0/ 下的两个脚本
     just check a0 solutions/a0         # 查别的目录（自测用）
-    .\\.venv\\Scripts\\python.exe tools/check_a0.py
+    .venv/bin/python tools/check_a0.py
 
 查的是两件事：`hello_tensor.py` 打印出来的东西对不对，`sin.py` 有没有生成一张
 真的画了曲线的 `sin.png`。
@@ -16,6 +16,8 @@ import re
 import subprocess
 import sys
 from pathlib import Path
+
+import torch
 
 # 失败信息里可能带学习者的原始输出，控制台编码装不下的字符直接替换，别让报错本身炸掉
 if hasattr(sys.stdout, "reconfigure"):
@@ -118,9 +120,12 @@ def main() -> int:
                 m = re.search(r"(True|False)", hello_out)
                 assert m, f"输出里找不到 True/False，没打印 CUDA 可用性。实际输出：\n{hello_out}"
                 cuda_available = m.group(1) == "True"
-                assert cuda_available, (
-                    "这台机器的 CUDA 是可用的，但脚本报 False。检查是不是打印了别的东西顶替了 "
-                    "torch.cuda.is_available()"
+                # 这台机器没有独立显卡，torch 是 CPU 版，is_available() 恒为 False。
+                # 有显卡的机器上才要求打印 True，两种情况都收，不要按机器写死。
+                assert cuda_available == torch.cuda.is_available(), (
+                    f"脚本打印 CUDA 可用 = {cuda_available}，但 torch.cuda.is_available() 是 "
+                    f"{torch.cuda.is_available()}。检查是不是打印了别的东西顶替了它。"
+                    f"实际输出：\n{hello_out}"
                 )
 
             @case("T5 打印了形状 (3, 4)")
@@ -133,10 +138,12 @@ def main() -> int:
                     f"实际输出：\n{hello_out}"
                 )
 
-            @case("T5b 打印了张量所在设备 cuda:0")
+            @case("T5b 打印了张量所在设备")
             def _t5b():
                 if not cuda_available:
-                    raise AssertionError("CUDA 不可用，第 5 步被跳过，这里没法验证")
+                    # 本机没有显卡。任务一的第 5 步是"如果 CUDA 可用"，条件不成立就不该做那几步，
+                    # 能跑到这里说明脚本没有去调 .to("cuda")。人工看它是怎么跳过分支的。
+                    return
                 # 必须匹配 "cuda:0" 这种形式：只搜 "cuda" 会被版本号 2.14.0+cu126
                 # 和 "CUDA可用:True" 那行误命中
                 assert re.search(r"cuda:\d", hello_out), (
@@ -163,7 +170,8 @@ def main() -> int:
             @case("T8 显卡上乘 2 的结果打印了")
             def _t8():
                 if not cuda_available:
-                    raise AssertionError("CUDA 不可用，第 5 步被跳过，这里没法验证")
+                    # 同上：没有显卡时第 5 步整体被跳过，没有"显卡上乘 2"的结果可查
+                    return
                 nums = numbers_in(hello_out)
                 missing = [i for i in range(12, 23, 2) if float(i) not in nums]
                 assert not missing, (
