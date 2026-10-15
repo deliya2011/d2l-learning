@@ -1,11 +1,12 @@
 # 本机依赖清单。换机器或 .venv 坏掉时用 `just setup` 重建。
 #
-# CUDA 版 torch 不在 PyPI 上，走 PyTorch 官方索引；主索引用清华镜像，国内直连 PyPI 太慢。
+# 本机没有独立显卡，装 CPU 版 torch（走 PyTorch 官方 cpu 索引）；
+# 主索引用清华镜像，国内直连 PyPI 太慢。
 --index-url https://pypi.tuna.tsinghua.edu.cn/simple
---extra-index-url https://download.pytorch.org/whl/cu126
+--extra-index-url https://download.pytorch.org/whl/cpu
 
-torch==2.14.0+cu126
-torchvision==0.29.1+cu126
+torch==2.14.1+cpu
+torchvision==0.29.1+cpu
 matplotlib
 numpy
 pandas

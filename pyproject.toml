@@ -4,7 +4,7 @@ version = "0.0.0"
 description = "动手学深度学习（torch 版）练习仓库"
 requires-python = ">=3.12"
 
-# 依赖清单不写在这里，见 requirements.txt（CUDA 版 torch 走 PyTorch 官方索引）。
+# 依赖清单不写在这里，见 requirements.txt（CPU 版 torch 走 PyTorch 官方索引）。
 # 解释器和所有依赖都在仓库内的 .venv：跑脚本用 `just run <文件>`，
 # 换机器用 `just setup` 重建，不要用系统里别的 python。
 dependencies = []

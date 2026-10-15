@@ -11,11 +11,11 @@
 
 所有代码都在本机这个仓库目录里。开一个终端，进到仓库所在的文件夹：
 
-```powershell
+```bash
 cd <仓库目录>
 ```
 
-机器规格：Windows，RTX 4060（8G 显存）。
+机器规格：Linux（Arch），**没有独立显卡**，所有实验在 CPU 上跑。
 
 仓库目录分工：
 
@@ -28,8 +28,8 @@ cd <仓库目录>
 
 `work/` 现在还不存在，先建出来：
 
-```powershell
-New-Item -ItemType Directory -Force work\a0
+```bash
+mkdir -p work/a0
 ```
 
 ## 2. 环境分层
@@ -38,26 +38,26 @@ Python 环境分两层，搞清每层管什么，后面的报错才好定位：
 
 | 层 | 谁提供 | 内容 |
 |---|---|---|
-| 解释器 | Python 官方安装包（用户级安装，不需要管理员） | Python 3.12.10 |
-| 依赖 | 仓库内的 `.venv` | torch 2.14.0+cu126、torchvision、matplotlib、numpy、pandas、tqdm、requests |
+| 解释器 | 系统包管理器（pacman） | Python 3.14 |
+| 依赖 | 仓库内的 `.venv` | torch 2.14.1（CPU 版）、torchvision、matplotlib、numpy、pandas、tqdm、requests |
 
 `.venv` 是这个仓库专用的依赖目录，装什么都只影响这个仓库，不碰系统里的 Python。
 清单写在 `requirements.txt`，换机器或 `.venv` 坏掉时一条命令重建：
 
-```powershell
+```bash
 just setup
 ```
 
 先看一眼实际状态：
 
-```powershell
+```bash
 just env
 ```
 
 `just` 是任务执行器，`just env` 会跑 `tools/env.py` 那个脚本。
 别的命令用 `just --list` 看。
 
-应该看到 python 3.12.10、torch 2.14.0+cu126、CUDA 可用、RTX 4060。
+应该看到 python 3.14、torch 2.14.1，`cuda 可用 : False`（本机没有显卡，这是正常的）。
 
 **为什么不用 conda**：conda 会往 shell 启动脚本里塞钩子，每次开终端都要跑一遍初始化，
 还自带一整套包管理，和系统的 Python 各管一套、边界不清。这里分成清楚的两层——
@@ -65,8 +65,8 @@ Python 由官方安装包装一次，依赖全部关在 `.venv` 里，哪层出�
 
 **需要额外包时**（比如第二版官方的 `d2l` 包）：
 
-```powershell
-.\.venv\Scripts\python.exe -m pip install d2l
+```bash
+.venv/bin/python -m pip install d2l
 ```
 
 装完把包名随手加进 `requirements.txt`，免得换机器时漏掉。
@@ -250,7 +250,7 @@ plt.savefig("文件名.png", dpi=120)   # 存成 PNG，dpi 是每英寸像素数
 `.py` 文件。所以任务里要写全：`plt.savefig("work/a0/sin.png")`，只写 `"sin.png"`
 会存到仓库根目录，写成 `"out.png"` 就落到一个谁也不会去看的地方。
 
-**matplotlib 能直接画 CPU 上的 torch 张量，但画不了显卡上的。** 本机实测（matplotlib 3.11）：
+**matplotlib 能直接画 CPU 上的 torch 张量，但画不了显卡上的。** 下面两行是在有显卡的机器上实测的（matplotlib 3.11）：
 
 | 传什么 | 结果 |
 |---|---|
@@ -409,15 +409,15 @@ print("已保存 work/a0/sin.png")
 
 ### 跑起来
 
-```powershell
+```bash
 just run work/a0/hello_tensor.py
 just run work/a0/sin.py
 ```
 
 `just run` 就是拿 `.venv` 里的解释器跑这个文件，等价于手敲：
 
-```powershell
-.\.venv\Scripts\python.exe work\a0\hello_tensor.py
+```bash
+.venv/bin/python work\a0\hello_tensor.py
 ```
 
 图存好之后，在编辑器的文件树里点开 `work/a0/sin.png` 就能看。
@@ -445,7 +445,7 @@ just run work/a0/sin.py
 
 本机这个仓库就是权威副本，也是要公开的学习记录。每完成一个小任务提交一次，别攒着：
 
-```powershell
+```bash
 git status
 git add work/a0/hello_tensor.py
 git commit -m "a0: 跑通第一个张量脚本"
@@ -463,7 +463,7 @@ git commit -m "a0: 跑通第一个张量脚本"
 | 跑某单元验收 | `just check b02` |
 | 拿参考答案验验收脚本 | `just check b02 solutions/b02/b02.py` |
 | 重建依赖环境 | `just setup` |
-| 直接敲解释器 | `.\.venv\Scripts\python.exe work\a0\hello_tensor.py` |
+| 直接敲解释器 | `.venv/bin/python work\a0\hello_tensor.py` |
 | 看讲义 | `notes/a0-setup.md` |
 
 ## 自测
@@ -499,6 +499,6 @@ git commit -m "a0: 跑通第一个张量脚本"
    `can't convert cuda:0 device type tensor to numpy`，必须先 `.cpu()`。
    要显式转就写 `x.cpu().numpy()`，注意 `.numpy()` 返回新数组，单独一行等于没转。
 8. `arange` 按**步长**生成（默认步长 1），`linspace` 按**点的个数**在两端之间均匀取。
-9. 用 `.venv` 里的解释器跑这个文件：`.\.venv\Scripts\python.exe work\a0\sin.py`。
+9. 用 `.venv` 里的解释器跑这个文件：`.venv/bin/python work\a0\sin.py`。
 
 </details>

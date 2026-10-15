@@ -9,7 +9,7 @@
 |---|---|
 | `d2lzh.xxx` | 你自己写的版本（建议收进 `work/d2llocal.py`），或第二版官方 `d2l` 包的同名 torch 版 |
 
-官方 torch 版 `d2l` 包需要单独安装（`./.venv/Scripts/python.exe -m pip install d2l`），本仓库默认不装，等你实现过一遍之后再装。
+官方 torch 版 `d2l` 包需要单独安装（`./.venv/bin/python -m pip install d2l`），本仓库默认不装，等你实现过一遍之后再装。
 
 ## 解锁清单
 

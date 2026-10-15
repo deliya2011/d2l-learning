@@ -1,13 +1,13 @@
-set shell := ["powershell", "-NoProfile", "-Command"]
+set shell := ["bash", "-uc"]
 
-# 本仓库在 Windows 上跑，解释器用仓库内的 .venv（依赖清单见 requirements.txt）。
-py := "./.venv/Scripts/python.exe"
+# 本仓库在 Linux 上跑，解释器用仓库内的 .venv（依赖清单见 requirements.txt）。
+py := "./.venv/bin/python"
 
 # 列出所有命令
 default:
     @just --list
 
-# 打印解释器、关键包版本、CUDA 状态
+# 打印解释器、关键包版本、加速器状态
 env:
     {{py}} tools/env.py
 
@@ -22,10 +22,10 @@ check u *args:
 
 # 重建 .venv 并装依赖（换机器或 .venv 坏掉时用）
 setup:
-    @if (-not (Test-Path .venv)) { python -m venv .venv }
+    @[ -d .venv ] || python -m venv .venv
     {{py}} -m pip install -r requirements.txt
 
 # 删掉 .venv 与 __pycache__
 clean:
-    @if (Test-Path .venv) { Remove-Item -Recurse -Force .venv }
-    @Get-ChildItem -Recurse -Directory -Filter __pycache__ | Remove-Item -Recurse -Force
+    rm -rf .venv
+    find . -name __pycache__ -type d -prune -exec rm -rf {} +
