@@ -240,11 +240,7 @@ train(None, 0.1, device="cuda")          # 0.1 3 {'device': 'cuda'}
 ### 2.3 返回多个值
 
 ```python
-def two():4. dunder 到底是什么
-
-这一节是这份讲义的重点。你说不知道 ￼￼__xx__￼￼ 是什么，那正好从这里建立直觉。
-
-￼￼￼4.1 你在别的语言里已经见过它
+def two():
     return 1, 2
 
 a, b = two()      # 解包
@@ -457,8 +453,6 @@ Vec2(1, 2) == "abc"
 def __eq__(self, other):
     if not isinstance(other, Vec2):
         return NotImplemented
-￼￼for x in foo￼￼ 背后做两件事：调 ￼￼foo.__iter__()￼￼ 拿到迭代器，然后反复调它的 ￼￼__next__()￼￼，
-直到抛 ￼￼StopIteration￼￼。
     return (self.x, self.y) == (other.x, other.y)
 ```
 
@@ -730,7 +724,7 @@ B02 的 T2 就是这样：形状能广播就返回相加结果，不能就抛 `V
 > 2. 默认值 `[]` 只在函数定义时创建一次，所有调用共享，会越积越多。用 `None` 当默认值，函数内部再新建。
 > 3. `self` 是当前对象的引用，C++ 里对应隐式的 `this`，但 Python 要求把它
 >    显式写在参数列表第一个。调用时不用传。
-> 4. dunder 是双下划线包起来的名字，由解释器在特定语法场合自动调用。`__add__` 就是 C++ 的`operator+`。
+> 4. dunder 是双下划线包起来的名字，由解释器在特定语法场合自动调用。`__add__` 就是 C++ 的 `operator+`。
 > 5. `__init__` 在 `Foo(...)` 创建对象时调一次；`__call__` 在把对象当函数调用 `foo(...)` 时每次调。
 > 6. `parameters()` 返回空，优化器拿到空列表，训练时参数不更新，且不报错。
 >    `nn.Module.__init__` 负责建内部登记表，漏掉就没地方登记。

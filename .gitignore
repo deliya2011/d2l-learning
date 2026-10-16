@@ -8,3 +8,6 @@ output/
 
 # Obsidian 的本地配置与插件（每个人机器上不一样，不进公开仓库）
 .obsidian/
+
+# 文件管理器（Dolphin 等）留下的目录标记文件
+.directory
