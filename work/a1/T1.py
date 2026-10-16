@@ -1,15 +1,16 @@
 class Counter:
-    def __init__(self, value):
-        self.value = value
+    def __init__(self, start=0):
+        self.start = start
         self.step = 0
 
-    def __call__(self, x=None):
+    def __call__(self, step=1):
         self.step += 1
-        return self.value + self.step - 1
+        return self.start + self.step - 1
 
-    def __len__(self, a=None):
-        self.step += 1
-        return self.step - 1
+    def __len__(
+        self,
+    ):
+        return self.step
 
     def __repr__(self):
-        return f"Counter(value={self.value}, calls={self.step})"
+        return f"Counter(value={self.start}, calls={self.step})"

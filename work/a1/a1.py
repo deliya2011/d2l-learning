@@ -4,19 +4,23 @@ import torch.nn as nn
 
 class Net(nn.Module):
     def __init__(self, in_dim, out_dim):
-        # 此处缺少super().__init__()，未调用父类构造函数
+        # 此处缺少super().__init__()，未调用父类构造函数，会导致parameters返回空，参数一动不动
         self.weight = torch.randn(in_dim, out_dim)
-        self.bias = torch.zeros(out_dim)  # 这两行都没有使用nn.Parameter(..)，没有登记
+        self.bias = torch.zeros(
+            out_dim
+        )  # 这两行都没有使用nn.Parameter(..)，没有登记，登记表是空的。会导致参数一动不动
 
     def forward(self, X):
-        return X @ self.weight + self.bias  # 返回值错误，应为self.weight+self.bias
+        return X @ self.weight + self.bias
 
 
 def batches(
     data=[],
 ):  # 此行错误，因为这样调用函数会使data值堆积，应该将data=[]改为data=None
     for i in range(len(data)):
-        return data[i]
+        return data[
+            i
+        ]  # 没有使用yield，会导致函数提前结束，只有一个值，应将return改为yield
 
 
 net = Net(3, 1)

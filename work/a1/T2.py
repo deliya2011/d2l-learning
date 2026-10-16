@@ -12,4 +12,4 @@ class Vec2:
         return (self.x, self.y) == (a.x, a.y)
 
     def __repr__(self):
-        return f"Vec2({self.x},{self.y})"
+        return f"Vec2({self.x}, {self.y})"
