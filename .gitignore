@@ -5,3 +5,6 @@ data/
 output/
 *.png
 !notes/**/*.png
+
+# Obsidian 的本地配置与插件（每个人机器上不一样，不进公开仓库）
+.obsidian/

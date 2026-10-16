@@ -91,18 +91,15 @@ def descend_step(w: torch.Tensor, step: float) -> None:
 第 1 步和第 4 步的后半句是这道题的两个考点，讲义第 5.2、5.5 节讲过原理。
 先自己写，卡住再展开骨架。
 
-<details><summary>展开骨架</summary>
-
-```python
-def descend_step(w: torch.Tensor, step: float) -> None:
-    ____                      # 1
-    y = ____                  # 2
-    ____                      # 3
-    with torch.no_grad():
-        ____                  # 4
-```
-
-</details>
+> [!note]- 展开骨架
+> ```python
+> def descend_step(w: torch.Tensor, step: float) -> None:
+>     ____                      # 1
+>     y = ____                  # 2
+>     ____                      # 3
+>     with torch.no_grad():
+>         ____                  # 4
+> ```
 
 **不许用 `torch.optim` 里的任何优化器。** 两个原因：优化器是 B06 的内容；
 更重要的是这道题练的正是优化器内部替你做的事——清梯度、在 `no_grad` 下原地更新。

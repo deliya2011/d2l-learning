@@ -330,26 +330,23 @@ matplotlib.use("Agg")        # 现在才切换，前面那张画布怎么办？�
 **先自己写一遍。** 骨架里已经给出了行数、顺序和变量名，对现在这个阶段算是很强的提示，
 展开就等于少了一半练习。卡住再展开。
 
-<details><summary>展开骨架</summary>
-
-```python
-import torch
-
-print("torch 版本：", ____)
-print("CUDA 可用：", ____)
-
-x = ____
-
-print("x =\n", x)
-print("形状：", ____, "元素个数：", ____)
-
-if ____:
-    g = ____
-    print("搬到显卡上：", ____)
-    print("乘 2 再搬回来：", ____)
-```
-
-</details>
+> [!note]- 展开骨架
+> ```python
+> import torch
+>
+> print("torch 版本：", ____)
+> print("CUDA 可用：", ____)
+>
+> x = ____
+>
+> print("x =\n", x)
+> print("形状：", ____, "元素个数：", ____)
+>
+> if ____:
+>     g = ____
+>     print("搬到显卡上：", ____)
+>     print("乘 2 再搬回来：", ____)
+> ```
 
 ### 期望输出
 
@@ -386,26 +383,23 @@ x =
 
 同样，先自己写。
 
-<details><summary>展开骨架</summary>
-
-```python
-import matplotlib
-____                    # 4.8 讲了这里填什么、为什么必须在下一行之前
-
-import matplotlib.pyplot as plt
-import torch
-
-x = ____                # 横坐标，见 4.7
-
-plt.figure(figsize=(5, 3))
-plt.plot(____, ____)    # 注意 4.7 最后那条：不能直接把张量传进去
-plt.xlabel("x")
-plt.ylabel("sin(x)")
-plt.savefig("work/a0/sin.png", dpi=120)
-print("已保存 work/a0/sin.png")
-```
-
-</details>
+> [!note]- 展开骨架
+> ```python
+> import matplotlib
+> ____                    # 4.8 讲了这里填什么、为什么必须在下一行之前
+>
+> import matplotlib.pyplot as plt
+> import torch
+>
+> x = ____                # 横坐标，见 4.7
+>
+> plt.figure(figsize=(5, 3))
+> plt.plot(____, ____)    # 注意 4.7 最后那条：不能直接把张量传进去
+> plt.xlabel("x")
+> plt.ylabel("sin(x)")
+> plt.savefig("work/a0/sin.png", dpi=120)
+> print("已保存 work/a0/sin.png")
+> ```
 
 ### 跑起来
 
@@ -481,24 +475,20 @@ git commit -m "a0: 跑通第一个张量脚本"
 8. `torch.arange` 和 `torch.linspace` 有什么区别？
 9. `just run work/a0/sin.py` 展开成什么命令？
 
-<details>
-<summary>做完再看：答案</summary>
-
-1. import 是运行时加载模块，加载完把模块对象绑到名字上，之后才能通过这个名字访问里面的东西。
-   `#include` 是编译期把源文本插进来，两者发生的时机和机制都不同。
-2. 要一个已经存好的值就用属性（不加括号）；要执行一段逻辑拿返回值就调用方法（加括号）。
-   拿不准就看打印出来是不是 `<built-in method ...>`。
-3. `torch.arange(12)` 默认 `int64`，是整数张量。任务要的是 float32，而且后面讲的运算都要求
-   浮点类型，所以显式写 `dtype=torch.float32`。不写不会报错，只是类型不对。
-4. 没变。`.to()` 返回新张量，`x` 还是原来那个在 CPU 上的。
-5. `.cpu()` 作用于 `g * 2` 的结果。不加括号会改变运算顺序。
-6. 惯例写在最前，避免"先建画布、后切后端"。实测 matplotlib 3.11.2 把它放在
-   `import matplotlib.pyplot` 之后调用仍然会切换后端、也不报警告，所以严格说不是"不生效"；
-   但已经建好的画布是在旧后端下创建的，切换之后它和新后端的关系没有定义。
-7. CPU 上的张量可以直接传，matplotlib 内部会自己转成 numpy。显卡上的张量不行，会报
-   `can't convert cuda:0 device type tensor to numpy`，必须先 `.cpu()`。
-   要显式转就写 `x.cpu().numpy()`，注意 `.numpy()` 返回新数组，单独一行等于没转。
-8. `arange` 按**步长**生成（默认步长 1），`linspace` 按**点的个数**在两端之间均匀取。
-9. 用 `.venv` 里的解释器跑这个文件：`.venv/bin/python work\a0\sin.py`。
-
-</details>
+> [!note]- 做完再看：答案
+> 1. import 是运行时加载模块，加载完把模块对象绑到名字上，之后才能通过这个名字访问里面的东西。
+>    `#include` 是编译期把源文本插进来，两者发生的时机和机制都不同。
+> 2. 要一个已经存好的值就用属性（不加括号）；要执行一段逻辑拿返回值就调用方法（加括号）。
+>    拿不准就看打印出来是不是 `<built-in method ...>`。
+> 3. `torch.arange(12)` 默认 `int64`，是整数张量。任务要的是 float32，而且后面讲的运算都要求
+>    浮点类型，所以显式写 `dtype=torch.float32`。不写不会报错，只是类型不对。
+> 4. 没变。`.to()` 返回新张量，`x` 还是原来那个在 CPU 上的。
+> 5. `.cpu()` 作用于 `g * 2` 的结果。不加括号会改变运算顺序。
+> 6. 惯例写在最前，避免"先建画布、后切后端"。实测 matplotlib 3.11.2 把它放在
+>    `import matplotlib.pyplot` 之后调用仍然会切换后端、也不报警告，所以严格说不是"不生效"；
+>    但已经建好的画布是在旧后端下创建的，切换之后它和新后端的关系没有定义。
+> 7. CPU 上的张量可以直接传，matplotlib 内部会自己转成 numpy。显卡上的张量不行，会报
+>    `can't convert cuda:0 device type tensor to numpy`，必须先 `.cpu()`。
+>    要显式转就写 `x.cpu().numpy()`，注意 `.numpy()` 返回新数组，单独一行等于没转。
+> 8. `arange` 按**步长**生成（默认步长 1），`linspace` 按**点的个数**在两端之间均匀取。
+> 9. 用 `.venv` 里的解释器跑这个文件：`.venv/bin/python work\a0\sin.py`。
