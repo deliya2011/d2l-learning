@@ -1,28 +1,15 @@
-import torch
-import torch.nn as nn
+"""A1：T1–T5 的验收入口。
 
+实现按题分散在 T1.py…T5.py（学习者的写法），这里只做转发，
+不含任何实现——目的是让 `just check a1` 能找到这几个名字。
 
-class Net(nn.Module):
-    def __init__(self, in_dim, out_dim):
-        # 此处缺少super().__init__()，未调用父类构造函数，会导致parameters返回空，参数一动不动
-        self.weight = torch.randn(in_dim, out_dim)
-        self.bias = torch.zeros(
-            out_dim
-        )  # 这两行都没有使用nn.Parameter(..)，没有登记，登记表是空的。会导致参数一动不动
+T6 是纸面改错题，行间批注放在 T6-改错题.md，不在这里。
+"""
 
-    def forward(self, X):
-        return X @ self.weight + self.bias
+from T1 import Counter
+from T2 import Vec2
+from T3 import batch_indices
+from T4 import ScaledShift
+from T5 import Timer
 
-
-def batches(
-    data=[],
-):  # 此行错误，因为这样调用函数会使data值堆积，应该将data=[]改为data=None,[] 在函数定义时只创建一次，所有调用共用同一个列表。
-    for i in range(len(data)):
-        return data[
-            i
-        ]  # 没有使用yield，会导致函数提前结束，只有一个值，应将return改为yield
-
-
-net = Net(3, 1)
-print(len(list(net.parameters())))
-print(net(torch.randn(2, 3)))
+__all__ = ["Counter", "Vec2", "batch_indices", "ScaledShift", "Timer"]

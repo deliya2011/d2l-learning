@@ -40,6 +40,11 @@ def load_user_module():
         print(f"找不到 {USER_FILE}")
         print("先照着 exercises/a1/code.md 把实现写在那里。")
         sys.exit(2)
+    # 学习者的实现可能按题拆成同目录的几个文件（T1.py…T5.py），由一个 a1.py 转发。
+    # 把那个目录加进 sys.path，`from T1 import Counter` 这类导入才找得到。
+    user_dir = str(USER_FILE.resolve().parent)
+    if user_dir not in sys.path:
+        sys.path.insert(0, user_dir)
     spec = importlib.util.spec_from_file_location("a1_user", USER_FILE)
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
