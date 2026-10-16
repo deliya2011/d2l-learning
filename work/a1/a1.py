@@ -16,7 +16,7 @@ class Net(nn.Module):
 
 def batches(
     data=[],
-):  # 此行错误，因为这样调用函数会使data值堆积，应该将data=[]改为data=None
+):  # 此行错误，因为这样调用函数会使data值堆积，应该将data=[]改为data=None,[] 在函数定义时只创建一次，所有调用共用同一个列表。
     for i in range(len(data)):
         return data[
             i

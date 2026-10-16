@@ -4,7 +4,7 @@ class Counter:
         self.step = 0
 
     def __call__(self, step=1):
-        self.step += 1
+        self.start += step
         return self.start + self.step - 1
 
     def __len__(

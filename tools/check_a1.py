@@ -52,13 +52,19 @@ def main() -> int:
     @case("T1 计数器")
     def _t1():
         c = mod.Counter()
-        assert c() == 1, f"第一次调用应返回 1，得到 {c()!r}"
-        assert c(5) == 6, "第二次传 5，应返回 6"
-        assert len(c) == 2, f"len(c) 应是调用次数 2，得到 {len(c)!r}"
+        # 先调用再断言：`c()` 有副作用（计数），写进 assert 的失败信息里会再调一次，
+        # 报出来的数字是第二次调用的结果，指向错误的方向（改过一版就是这个坑）。
+        first = c()
+        assert first == 1, f"第一次调用应返回 1，得到 {first!r}"
+        second = c(5)
+        assert second == 6, f"第二次传 5，应返回 6，得到 {second!r}"
+        calls = len(c)
+        assert calls == 2, f"len(c) 应是调用次数 2，得到 {calls!r}"
         text = repr(c)
         assert "6" in text and "2" in text, f"repr 里应含当前值和调用次数，得到 {text!r}"
         c2 = mod.Counter(start=10)
-        assert c2() == 11, f"start=10 时第一次调用应返回 11，得到 {c2()!r}"
+        first2 = c2()
+        assert first2 == 11, f"start=10 时第一次调用应返回 11，得到 {first2!r}"
 
     @case("T2 运算符")
     def _t2():
