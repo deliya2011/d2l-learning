@@ -4,7 +4,7 @@
 
 | 材料 | 位置 | 预估 |
 |---|---|---|
-| 纸质书 | 3.8 多层感知机、3.9 从零开始实现、3.10 简洁实现 | 45 分钟 |
+| 纸质书 | 4.1 多层感知机、4.2 从零开始实现、4.3 简洁实现 | 45 分钟 |
 | 电子版 | [4.1 多层感知机](https://zh.d2l.ai/chapter_multilayer-perceptrons/mlp.html)、[4.2 从零实现](https://zh.d2l.ai/chapter_multilayer-perceptrons/mlp-scratch.html)、[4.3 简洁实现](https://zh.d2l.ai/chapter_multilayer-perceptrons/mlp-concise.html) | 50 分钟 |
 | 讲义 | `notes/b08-mlp.md` | 35 分钟 |
 
@@ -33,9 +33,7 @@
 但 3.9 节明确说了"使用基础的 `maximum` 函数来实现 ReLU，而非直接调用 MXNet 的
 `relu` 函数"，所以 `relu` 仍要自己写。
 
-**两版超参数不一样**：纸质书是 5 轮、学习率 0.5；电子版是 10 轮、学习率 0.1。
-讲义与题目都用电子版那一组，两者不要混。
+**超参数**：10 轮、学习率 0.1、批量 256（讲义与题目都用这一组）。
 
-**拉平这件事两版不同**：纸质书靠 Gluon 的 `nn.Dense` 自动处理输入形状，
-电子版的 `nn.Linear` 只把最后一维当特征维，所以必须显式 `nn.Flatten()`。
-这是照着纸质书写 torch 代码时最容易漏的一处。
+**拉平**：`nn.Linear` 只把最后一维当特征维，而图像是 `(n, 1, 28, 28)`，所以必须显式
+`nn.Flatten()`（或用 `reshape` 手动拉平）。这是这一章最容易漏的一处。

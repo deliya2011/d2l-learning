@@ -8,16 +8,16 @@
 | 电子版 | [3.1](https://zh.d2l.ai/chapter_linear-networks/linear-regression.html)、[3.2](https://zh.d2l.ai/chapter_linear-networks/linear-regression-scratch.html)、[3.3](https://zh.d2l.ai/chapter_linear-networks/linear-regression-concise.html) | 60 分钟 |
 | 讲义 | `notes/b06-linear-regression.md` | 40 分钟 |
 
-这是第一个真正的模型。纸质书 3.1 是原理（只有公式），3.2 与 3.3 是两份实现。
+这是第一个真正的模型。3.1 讲原理与解析解，3.2 与 3.3 是两份实现（PyTorch）。
 
 ## 读的时候要能回答
 
 1. 线性回归的模型假设是什么？"线性"指的是对什么线性？
 2. 平方损失里的 $\frac{1}{2}$ 为什么可以随便乘？它对最优解有影响吗？
-3. 从高斯噪声假设怎么推出"最小化平方误差"？（纸质书没写，第二版 3.1 有）
+3. 从高斯噪声假设怎么推出"最小化平方误差"？（3.1 的「正态分布与平方损失」一节）
 4. 为什么用小批量梯度而不是全部样本？批量大小怎么影响梯度的噪声？
 5. 学习率取太大会看到什么现象？取太小呢？
-6. 纸质书 3.2 里有四个函数标了"已保存在 d2lzh 包中"，把它们找出来。
+6. 3.2 里有哪四个函数是"本该自己写、书上却直接给了封装"的？把它们找出来。
 7. 训练循环里 `zero_grad` 该放在哪一步？为什么？
 8. 自己写的 `sgd` 与 `torch.optim.SGD` 相比少做了哪些事？
 

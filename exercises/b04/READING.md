@@ -4,12 +4,12 @@
 
 | 材料 | 位置 | 预估 |
 |---|---|---|
-| 纸质书 | 附录《数学基础》的"微分"部分，从"导数和微分"到"梯度" | 30 分钟 |
+| 纸质书 | 第 2.4 节「微积分」+ 第 2.5 节「自动微分」 | 50 分钟 |
 | 电子版 | [2.4 微积分](https://zh.d2l.ai/chapter_preliminaries/calculus.html) | 30 分钟 |
 | 电子版 | [2.5 自动微分](https://zh.d2l.ai/chapter_preliminaries/autograd.html) | 30 分钟 |
 | 讲义 | `notes/b04-autograd.md` | 40 分钟 |
 
-纸质书这一章只有公式。真正的重点在第二版的 2.5 节：那是 d2l 里第一次出现
+真正的重点在 2.5 节：那是书里第一次出现
 `requires_grad` 和 `backward`，后面每一章的代码都靠它。
 
 ## 读的时候要能回答

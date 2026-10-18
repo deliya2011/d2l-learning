@@ -8,7 +8,7 @@
 | 电子版 | [3.4](https://zh.d2l.ai/chapter_linear-networks/softmax-regression.html)、[3.5](https://zh.d2l.ai/chapter_linear-networks/image-classification-dataset.html)、[3.6](https://zh.d2l.ai/chapter_linear-networks/softmax-regression-scratch.html)、[3.7](https://zh.d2l.ai/chapter_linear-networks/softmax-regression-concise.html) | 70 分钟 |
 | 讲义 | `notes/b07-softmax.md` | 40 分钟 |
 
-四节里 3.4 是原理（三件事：输出怎么变概率、损失怎么定义、结果怎么评估），
+四节里 3.4 讲原理（三件事：输出怎么变概率、损失怎么定义、结果怎么评估），
 3.5 是数据，3.6 与 3.7 是两份实现。
 
 ## 读的时候要能回答

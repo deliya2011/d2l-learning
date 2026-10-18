@@ -1,6 +1,6 @@
 # B02 数据操作与数据预处理
 
-对应 v1 第 2.2 节（纸质书，MXNet）与 v2 第 2.1、2.2 节（电子版，看 PyTorch tab）。
+对应第二版第 2.1 节「数据操作」与第 2.2 节「数据预处理」（纸质书与在线版同版，代码是 PyTorch）。
 本单元解决数据怎么进程序、怎么改形状、怎么算；后面每一章都在写张量运算，这里的形状规则和
 内存语义没弄明白，之后的维度错误只能靠试错定位。
 
@@ -8,37 +8,38 @@ torch 行为在 torch 2.14 上跑过（CPU 与远程 4070S 各测一遍），pan
 
 ## 与书对应
 
-| 讲义小节 | 纸质书（第一版） | 电子版（第二版） |
+| 讲义小节 | 纸质书（第二版） | 在线（第二版） |
 |---|---|---|
-| 1 两版代码的命名差别 | 2.2.1 创建`NDArray`（`nd` 模块） | [2.1 数据操作](https://zh.d2l.ai/chapter_preliminaries/ndarray.html) 的 MXNet tab（先 `npx.set_np()` 再用 `np`） |
-| 2 创建张量与形状 | 2.2.1 创建`NDArray` | 2.1.1 入门 |
-| 3 逐元素运算与拼接 | 2.2.2 运算 | 2.1.2 运算符 |
-| 4 广播机制 | 2.2.3 广播机制 | 2.1.3 广播机制 |
-| 5 索引与切片 | 2.2.4 索引 | 2.1.4 索引和切片 |
-| 6 内存复用与 in-place 操作 | 2.2.5 运算的内存开销 | 2.1.5 节省内存 |
-| 7 与 NumPy 互转 | 2.2.6 `NDArray`和NumPy相互变换 | 2.1.6 转换为其他Python对象 |
-| 8 数据预处理 | 无，本节补充 | [2.2 数据预处理](https://zh.d2l.ai/chapter_preliminaries/pandas.html) |
+| 1 在线版里的 MXNet 标签页 | — | [2.1 数据操作](https://zh.d2l.ai/chapter_preliminaries/ndarray.html) 的 MXNet tab（历史背景） |
+| 2 创建张量与形状 | 2.1.1 入门 | 2.1.1 入门 |
+| 3 逐元素运算与拼接 | 2.1.2 运算符 | 2.1.2 运算符 |
+| 4 广播机制 | 2.1.3 广播机制 | 2.1.3 广播机制 |
+| 5 索引与切片 | 2.1.4 索引和切片 | 2.1.4 索引和切片 |
+| 6 内存复用与 in-place 操作 | 2.1.5 节省内存 | 2.1.5 节省内存 |
+| 7 与 NumPy 互转 | 2.1.6 转换为其他Python对象 | 2.1.6 转换为其他Python对象 |
+| 8 数据预处理 | 2.2 数据预处理 | [2.2 数据预处理](https://zh.d2l.ai/chapter_preliminaries/pandas.html) |
 | 自测题 | 无 | 无 |
 
-纸质书 2.2 与电子版 2.1、2.2 都有代码，纸质书是 MXNet 的 `nd`，电子版有 PyTorch tab；第 8 节纸质书没有，整节来自电子版 2.2。
-电子版 2.1、2.2 没有用 `d2l` 包的封装（直接 `import torch` 与 `import pandas as pd`），讲义与它一致，全程裸 torch 与 pandas。
+纸质书与在线版同为第二版、代码是 PyTorch；2.1 与 2.2 直接照书敲即可，在线版用来对照。
+两节都没有用 `d2l` 包的封装（直接 `import torch` 与 `import pandas as pd`），讲义与它一致。
 讲义 2.1 的 dtype 默认值、2.2 的 `torch.Tensor` 与 `torch.empty`、2.4 的 `view` 与 `contiguous`、2.5 的形状报错，这四处在两版书里都核不到，属本节补充。
 
-## 1. 两版代码的命名差别
+## 1. 在线版里的 MXNet 标签页（历史背景）
 
-v1 用 `nd` 模块（`NDArray`），v2 电子版的 MXNet tab 换成 numpy 风格的 `np` 并先调 `npx.set_np()`。
-两套名字指同一类对象，认第二列：
+你的书是 PyTorch 版，直接照书敲即可。这一节只是给"以后遇到别人旧的 MXNet 代码"留一张对照表：
+在线版的 MXNet 标签页用 `nd` 模块（`NDArray`），后来换成 numpy 风格的 `np` 并先调 `npx.set_np()`。
+三者指同一类对象，认第二列：
 
-| 书上（v1，`nd.`） | PyTorch |
-|---|---|
-| `nd.arange(12)` | `torch.arange(12)`，dtype 推断规则不同，见 2.1 |
-| `nd.zeros((2, 3, 4))`、`nd.ones((3, 4))` | `torch.zeros(2, 3, 4)`、`torch.ones(3, 4)` |
-| `nd.array([[2, 1], [1, 2]])` | `torch.tensor([[2, 1], [1, 2]])` |
-| `nd.random.normal(0, 1, shape=(3, 4))` | `torch.normal(0., 1., size=(3, 4))`，标准正态用 `torch.randn(3, 4)` |
-| `x.size`（属性，元素总数） | `x.numel()`；torch 的 `x.size()` 是方法且返回形状，见 2.3 |
-| `x.reshape((3, 4))`、`Y.exp()` | `x.reshape(3, 4)`、`torch.exp(Y)` |
-| `nd.concat(X, Y, dim=0)`、`nd.dot(X, Y.T)` | `torch.cat([X, Y], dim=0)`、`X @ Y.T`，矩阵乘法在 B03 |
-| `X.asnumpy()`、`nd.elemwise_add(X, Y, out=Z)` | `X.numpy()`、`torch.add(X, Y, out=Z)`，内存语义见第 7 节 |
+| 书上（v1，`nd.`）                                 | PyTorch                                                       |
+| -------------------------------------------- | ------------------------------------------------------------- |
+| `nd.arange(12)`                              | `torch.arange(12)`，dtype 推断规则不同，见 2.1                         |
+| `nd.zeros((2, 3, 4))`、`nd.ones((3, 4))`      | `torch.zeros(2, 3, 4)`、`torch.ones(3, 4)`                     |
+| `nd.array([[2, 1], [1, 2]])`                 | `torch.tensor([[2, 1], [1, 2]])`                              |
+| `nd.random.normal(0, 1, shape=(3, 4))`       | `torch.normal(0., 1., size=(3, 4))`，标准正态用 `torch.randn(3, 4)` |
+| `x.size`（属性，元素总数）                            | `x.numel()`；torch 的 `x.size()` 是方法且返回形状，见 2.3                 |
+| `x.reshape((3, 4))`、`Y.exp()`                | `x.reshape(3, 4)`、`torch.exp(Y)`                              |
+| `nd.concat(X, Y, dim=0)`、`nd.dot(X, Y.T)`    | `torch.cat([X, Y], dim=0)`、`X @ Y.T`，矩阵乘法在 B03                |
+| `X.asnumpy()`、`nd.elemwise_add(X, Y, out=Z)` | `X.numpy()`、`torch.add(X, Y, out=Z)`，内存语义见第 7 节               |
 
 ## 2. 创建张量与形状
 

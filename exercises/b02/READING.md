@@ -4,12 +4,11 @@
 
 | 材料 | 位置 |
 |---|---|
-| 纸质书（主） | 第 2 章第 2.2 节「数据操作」 |
-| 电子版（补充，有 PyTorch 代码） | <https://zh.d2l.ai/chapter_preliminaries/ndarray.html> |
-| 电子版（纸质书没有） | <https://zh.d2l.ai/chapter_preliminaries/pandas.html> 「数据预处理」 |
+| 纸质书（主） | 第 2.1 节「数据操作」+ 第 2.2 节「数据预处理」 |
+| 在线版 | <https://zh.d2l.ai/chapter_preliminaries/ndarray.html> 与 <https://zh.d2l.ai/chapter_preliminaries/pandas.html> |
 
-纸质书用的是 MXNet，代码块里的 `nd.xxx` 全部要换成 torch 写法。电子版同一页有 PyTorch 标签页，
-但**先自己写一遍再看**，写完了拿电子版对答案。两边的 API 对照在 `notes/b02-data-ops.md` 第 1 节。
+纸质书与在线版同为第二版、代码是 PyTorch，直接照书敲。**先自己写一遍再看在线版**，
+写完拿它对照。讲义 `notes/b02-data-ops.md` 第 1 节留了一张 MXNet 名字对照表，那是历史背景，可跳过。
 
 讲义 `notes/b02-data-ops.md` 在读完书之后再看。讲义里补了书上没写的坑，先看书再看讲义，
 顺序反了你会以为自己都会。
