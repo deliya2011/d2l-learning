@@ -61,10 +61,8 @@ def load_csv(path: str) -> tuple[torch.Tensor, list[str], dict]:
     frame = pd.read_csv(path)  # 读入文件
     num_cols = [
         c for c in frame.columns if pd.api.types.is_numeric_dtype(frame[c])
-    ]  # 遍历文件列表，读取数值列数据
-    cat_cols = [
-        c for c in frame.columns if c not in num_cols
-    ]  # 遍历文件，读取需要补充的NaN
+    ]  # 按类型筛出数值列的列名
+    cat_cols = [c for c in frame.columns if c not in num_cols]  # 剩下的列都是类别列
     columns: dict[str, list[float]] = {}
     stats: dict = {"数值列": num_cols, "类别列": {}}
 
