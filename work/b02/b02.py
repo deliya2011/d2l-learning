@@ -39,7 +39,7 @@ def safe_broadcast_add(a: torch.Tensor, b: torch.Tensor) -> torch.Tensor:
     b1 = (1,) * (max_len - len(sb)) + sb
     for i, (a2, b2) in enumerate(zip(a1, b1)):
         if a2 != b2 and a2 != 1 and b2 != 1:
-            raise ValueError(f"第一处不匹配的维度编号为：{a2}和{b2}")
+            raise ValueError(f"第 {i} 维：{a2} 与 {b2}")
     return a + b
 
 
