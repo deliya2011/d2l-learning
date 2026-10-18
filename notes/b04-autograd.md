@@ -148,14 +148,15 @@ $$\mathbf{v}^\top \mathbf{J},\qquad \mathbf{J}=\frac{\partial \mathbf{y}}{\parti
 纸质书用的是 MXNet。这一节只讲两边**默认行为不同**的地方——这类差异最阴，照搬不会报错，
 只是结果不对。
 
-| 事项 | torch | MXNet |
-|---|---|---|
-| 打开求导 | `x.requires_grad_(True)` 只开记录开关，`.grad` 初始为 `None` | `x.attach_grad()` 顺带分配梯度缓冲区并初始化为 0 |
-| 建图 | 默认就建，关掉写 `with torch.no_grad():` | 要显式写 `with autograd.record():` |
-| 非标量反传 | 必须显式给 `gradient`，否则报错 | 自动先求和 |
-| **梯度累加** | `.grad` **逐次累加** | 每次反向**覆盖**缓冲区（默认 `grad_req='write'`） |
-| 原地更新参数 | 叶子张量在开梯度的模式下原地改会报错，要包 `no_grad()` | 可以写 `param[:] = param - lr * grad` |
-| 训练与预测模式 | 拆成两件事：`torch.is_grad_enabled()` 管建图，`nn.Module.training` 管 dropout 与 BN | `autograd.is_training()` 一个全局开关管两件事 |
+| 事项       | torch                                                                   | MXNet                                |
+| -------- | ----------------------------------------------------------------------- | ------------------------------------ |
+| 打开求导     | `x.requires_grad_(True)` 只开记录开关，`.grad` 初始为 `None`                      | `x.attach_grad()` 顺带分配梯度缓冲区并初始化为 0   |
+| 建图       | 默认就建，关掉写 `with torch.no_grad():`                                        | 要显式写 `with autograd.record():`       |
+| 非标量反传    | 必须显式给 `gradient`，否则报错                                                   | 自动先求和                                |
+| **梯度累加** | `.grad` **逐次累加**                                                        | 每次反向**覆盖**缓冲区（默认 `grad_req='write'`） |
+| 原地更新参数   | 叶子张量在开梯度的模式下原地改会报错，要包 `no_grad()`                                       | 可以写 `param[:] = param - lr * grad`   |
+| 训练与预测模式  | 拆成两件事：`torch.is_grad_enabled()` 管建图，`nn.Module.training` 管 dropout 与 BN | `autograd.is_training()` 一个全局开关管两件事  |
+|          |                                                                         |                                      |
 
 梯度那条在 5.2 节展开，它最容易让训练"看起来在跑，其实不对"。
 
