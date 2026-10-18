@@ -57,4 +57,31 @@ def clone_is_copy() -> bool:
     return bool(x[1].item() == 114514)
 
 
-# def load_csv(path: str) -> tuple[torch.Tensor, list[str], dict]:
+def load_csv(path: str) -> tuple[torch.Tensor, list[str], dict]:
+    frame = pd.read_csv(path)  # 读入文件
+    num_cols = [
+        c for c in frame.columns if pd.api.types.is_numeric_dtype(frame[c])
+    ]  # 遍历文件列表，读取数值列数据
+    cat_cols = [
+        c for c in frame.columns if c not in num_cols
+    ]  # 遍历文件，读取需要补充的NaN
+    columns: dict[str, list[float]] = {}
+    stats: dict = {"数值列": num_cols, "类别列": {}}
+
+    for name in num_cols:
+        filled = frame[name].fillna(frame[name].mean())  # 补全frame中缺失值
+        columns[name] = filled.astype(
+            "float32"
+        ).tolist()  # filled转为float32格式，转列表
+
+    for name in cat_cols:
+        counts = frame[name].value_counts().to_dict()
+        stats["类别列"][name] = {str(k): int(v) for k, v in counts.items()}
+        for value in sorted(counts):
+            columns[f"{name}_{value}"] = (
+                (frame[name] == value).astype("float32").tolist()
+            )
+
+    names = list(columns)
+    feats = torch.tensor([columns[n] for n in names], dtype=torch.float32).T
+    return feats, names, stats
