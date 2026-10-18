@@ -71,6 +71,7 @@ v2 把参数比作旋钮。这个比喻容易漏掉一半。
 | --- | ----- | ---------------- | --------------------------------------------------- |
 | 参数  | 训练过程定 | 权重、偏置            | `requires_grad=True` 的张量，`model.parameters()` 列出的东西 |
 | 超参数 | 你定    | 学习率、批量大小、层数、训练轮数 | 代码里的常数或配置项                                          |
+|     |       |                  |                                                     |
 
 落到后面，B06 你会同时写下 `w = torch.zeros(...)` 和 `lr = 0.03`。前者进优化器被反复修改，
 后者只影响每次修改的幅度。混淆这两者，“模型不收敛”这类问题会无从下手。
@@ -193,43 +194,43 @@ v1 有一句判断，“我们也正在经历从含参数统计模型转向完�
 
 后面代码和文档里全是英文。这张表按首次出现的顺序排，遇到不认识的回来查。
 
-| 英文 | 中文 | 备注 |
-|---|---|---|
-| artificial intelligence, AI | 人工智能 | 目标层 |
-| machine learning, ML | 机器学习 | |
-| representation learning | 表征学习 | |
-| deep learning, DL | 深度学习 | 多级表示的表征学习 |
-| neural network | 神经网络 | 名字来自生物学，B08 起大量出现 |
-| feature | 特征 | |
-| label / target | 标签 / 目标 | |
-| sample / example | 样本 | |
-| dataset | 数据集 | |
-| model / model family | 模型 / 模型族 | |
-| parameter | 参数 | 训练得到 |
-| hyperparameter | 超参数 | 人设定 |
-| loss function | 损失函数 | |
-| training set | 训练集 | |
-| test set | 测试集 | |
-| generalization | 泛化 | 在未见数据上的表现 |
-| overfitting | 过拟合 | 训练集好、测试集差 |
-| gradient descent | 梯度下降 | B04、B25 |
-| mini-batch | 小批量 | |
-| epoch | 轮 | |
-| end-to-end | 端到端 | |
-| feature engineering | 特征工程 | 深度学习要替代的对象 |
-| supervised learning | 监督学习 | |
-| regression | 回归 | 标签是数值 |
-| classification | 分类 | 标签是类别 |
-| cross-entropy | 交叉熵 | B07 的损失函数 |
-| unsupervised learning | 无监督学习 | |
-| self-supervised | 自监督 | B28 |
-| reinforcement learning | 强化学习 | |
-| agent / policy / reward | 智能体 / 策略 / 奖励 | |
-| attention | 注意力 | B23 |
-| self-attention | 自注意力 | B24 |
-| Transformer | Transformer | 不译 |
-| pre-training / fine-tuning | 预训练 / 微调 | B27、B28 |
-| large language model, LLM | 大语言模型 | |
+| 英文                          | 中文            | 备注                |
+| --------------------------- | ------------- | ----------------- |
+| artificial intelligence, AI | 人工智能          | 目标层               |
+| machine learning, ML        | 机器学习          |                   |
+| representation learning     | 表征学习          |                   |
+| deep learning, DL           | 深度学习          | 多级表示的表征学习         |
+| neural network              | 神经网络          | 名字来自生物学，B08 起大量出现 |
+| feature                     | 特征            |                   |
+| label / target              | 标签 / 目标       |                   |
+| sample / example            | 样本            |                   |
+| dataset                     | 数据集           |                   |
+| model / model family        | 模型 / 模型族      |                   |
+| parameter                   | 参数            | 训练得到              |
+| hyperparameter              | 超参数           | 人设定               |
+| loss function               | 损失函数          |                   |
+| training set                | 训练集           |                   |
+| test set                    | 测试集           |                   |
+| generalization              | 泛化            | 在未见数据上的表现         |
+| overfitting                 | 过拟合           | 训练集好、测试集差         |
+| gradient descent            | 梯度下降          | B04、B25           |
+| mini-batch                  | 小批量           |                   |
+| epoch                       | 轮             |                   |
+| end-to-end                  | 端到端           |                   |
+| feature engineering         | 特征工程          | 深度学习要替代的对象        |
+| supervised learning         | 监督学习          |                   |
+| regression                  | 回归            | 标签是数值             |
+| classification              | 分类            | 标签是类别             |
+| cross-entropy               | 交叉熵           | B07 的损失函数         |
+| unsupervised learning       | 无监督学习         |                   |
+| self-supervised             | 自监督           | B28               |
+| reinforcement learning      | 强化学习          |                   |
+| agent / policy / reward     | 智能体 / 策略 / 奖励 |                   |
+| attention                   | 注意力           | B23               |
+| self-attention              | 自注意力          | B24               |
+| Transformer                 | Transformer   | 不译                |
+| pre-training / fine-tuning  | 预训练 / 微调      | B27、B28           |
+| large language model, LLM   | 大语言模型         |                   |
 
 ## 7. 自测题
 
