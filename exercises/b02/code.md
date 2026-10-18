@@ -21,6 +21,7 @@ def tensor_info(x: torch.Tensor) -> dict:
     device          -> str，例如 'cpu' 或 'cuda:0'
     is_contiguous   -> bool
     """
+    
 ```
 
 要求：`shape` 必须是普通的 Python `tuple`（不是 `torch.Size`），`dtype` 必须是字符串。
