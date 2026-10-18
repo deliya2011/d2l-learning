@@ -15,3 +15,7 @@ class Counter:
 
     def __repr__(self):
         return f"Counter(value={self.start}, calls={self.step})"
+
+
+c = Counter()
+print(c(), c(5), len(c), repr(c))
