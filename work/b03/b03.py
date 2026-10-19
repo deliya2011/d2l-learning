@@ -5,7 +5,7 @@ A = torch.arange(6.0).reshape(2, 3)
 x = torch.ones(3)
 
 # 想算 A 乘以向量 x
-y = A * x #此行错误，A*x是点积的写法，即相同位置元素乘积之和，矩阵乘向量应该用torch.mv(A,x)
+y = A * x #此行错误，A * x：逐元素乘法。x 形状 (3,) 按广播对齐到最后维，每行都乘同一个 x，结果仍是 (2, 3)矩阵乘向量应该用torch.mv(A,x)
 
 # 想每一行除以该行元素之和
 s = A.sum(dim=1) #此行错误，sum会导致被指定的轴消失，应改为s=A.sum(dim=1,keepdim=True)
