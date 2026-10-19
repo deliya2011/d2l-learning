@@ -18,14 +18,14 @@ def reduce_shape(shape: tuple, dim: int, keepdim: bool) -> tuple:
     """
 ```
 
-| 调用 | 应当返回 |
-|---|---|
-| `reduce_shape((3, 4), 0, False)` | `(4,)` |
-| `reduce_shape((3, 4), 0, True)` | `(1, 4)` |
-| `reduce_shape((3, 4), 1, False)` | `(3,)` |
-| `reduce_shape((2, 3, 4), 1, False)` | `(2, 4)` |
-| `reduce_shape((2, 3, 4), 1, True)` | `(2, 1, 4)` |
-| `reduce_shape((5,), 0, False)` | `()` |
+| 调用                                  | 应当返回        |
+| ----------------------------------- | ----------- |
+| `reduce_shape((3, 4), 0, False)`    | `(4,)`      |
+| `reduce_shape((3, 4), 0, True)`     | `(1, 4)`    |
+| `reduce_shape((3, 4), 1, False)`    | `(3,)`      |
+| `reduce_shape((2, 3, 4), 1, False)` | `(2, 4)`    |
+| `reduce_shape((2, 3, 4), 1, True)`  | `(2, 1, 4)` |
+| `reduce_shape((5,), 0, False)`      | `()`        |
 
 返回值必须是普通 Python `tuple`，形状为空时返回 `()`（长度 0 的元组）。
 
@@ -65,11 +65,11 @@ def l2_norm(x: torch.Tensor) -> torch.Tensor:
     """
 ```
 
-| 调用 | 应当返回 |
-|---|---|
-| `l2_norm(torch.tensor([3.0, 4.0]))` | `tensor(5.)` |
-| `l2_norm(torch.zeros(5))` | `tensor(0.)` |
-| `l2_norm(torch.ones(2, 3))` | `tensor(2.4495)`（$\sqrt{6}$） |
+| 调用                                  | 应当返回                         |
+| ----------------------------------- | ---------------------------- |
+| `l2_norm(torch.tensor([3.0, 4.0]))` | `tensor(5.)`                 |
+| `l2_norm(torch.zeros(5))`           | `tensor(0.)`                 |
+| `l2_norm(torch.ones(2, 3))`         | `tensor(2.4495)`（$\sqrt{6}$） |
 
 对任意形状都成立，先展平再算。返回 0 维张量，不是 Python 浮点数。
 

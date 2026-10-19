@@ -35,31 +35,31 @@
 线性代数是第二版 2.3 节，有代码；本讲义按 2.3 节逐小节展开。
 先把这一章的 API 认全，后面几节用到时不再重复交代。
 
-| 要做什么 | torch 写法 |
-|---|---|
-| 造标量 | `torch.tensor(3.0)`，0 维 |
-| 造向量、矩阵 | `torch.arange(4)`、`torch.arange(20).reshape(5, 4)` |
-| 转置 | `A.T`。二维所见即所得，三维以上语义不同，见第 2 节 |
-| 复制一份 | `A.clone()` |
-| 按轴求和 / 求均值 / 累加和 | `A.sum(dim=0)`、`A.mean(dim=0)`、`A.cumsum(dim=0)` |
-| 保留被消掉的那一维 | 上面几个都接受 `keepdim=True` |
-| 点积 | `torch.dot(x, y)`，只接受两个一维向量 |
-| 矩阵乘向量 | `torch.mv(A, x)` 或 `A @ x` |
-| 矩阵乘矩阵 | `torch.mm(A, B)` 或 `A @ B` |
-| 向量范数 | `torch.linalg.vector_norm(u)` |
-| 矩阵范数 | `torch.linalg.norm(X)`，Frobenius 范数 |
-| 绝对值再求和 | `torch.abs(u).sum()` |
+| 要做什么             | torch 写法                                           |
+| ---------------- | -------------------------------------------------- |
+| 造标量              | `torch.tensor(3.0)`，0 维                            |
+| 造向量、矩阵           | `torch.arange(4)`、`torch.arange(20).reshape(5, 4)` |
+| 转置               | `A.T`。二维所见即所得，三维以上语义不同，见第 2 节                      |
+| 复制一份             | `A.clone()`                                        |
+| 按轴求和 / 求均值 / 累加和 | `A.sum(dim=0)`、`A.mean(dim=0)`、`A.cumsum(dim=0)`   |
+| 保留被消掉的那一维        | 上面几个都接受 `keepdim=True`                             |
+| 点积               | `torch.dot(x, y)`，只接受两个一维向量                        |
+| 矩阵乘向量            | `torch.mv(A, x)` 或 `A @ x`                         |
+| 矩阵乘矩阵            | `torch.mm(A, B)` 或 `A @ B`                         |
+| 向量范数             | `torch.linalg.vector_norm(u)`                      |
+| 矩阵范数             | `torch.linalg.norm(X)`，Frobenius 范数                |
+| 绝对值再求和           | `torch.abs(u).sum()`                               |
 
 ### 四个乘法函数怎么选
 
 这一章最容易用错的地方。torch 把它们拆开，每个只干一件事：
 
-| 函数 | 接受的形状 | 结果 |
-|---|---|---|
-| `torch.dot(a, b)` | 两个一维、长度相同 | 标量 |
-| `torch.mv(A, x)` | 矩阵、一维向量 | 一维 |
-| `torch.mm(A, B)` | 两个二维 | 二维 |
-| `torch.matmul(A, B)` | 任意可广播的形状 | 高维时按最后两维做矩阵乘 |
+| 函数                   | 接受的形状     | 结果           |
+| -------------------- | --------- | ------------ |
+| `torch.dot(a, b)`    | 两个一维、长度相同 | 标量           |
+| `torch.mv(A, x)`     | 矩阵、一维向量   | 一维           |
+| `torch.mm(A, B)`     | 两个二维      | 二维           |
+| `torch.matmul(A, B)` | 任意可广播的形状  | 高维时按最后两维做矩阵乘 |
 
 `@` 运算符是 `torch.matmul` 的简写。所以 `A @ x` 与 `torch.mv(A, x)` 在一维情形下结果相同，
 但 `@` 还能处理更高维与广播。
@@ -322,40 +322,40 @@ torch.stack([A, A], dim=0).shape              # (2, 5, 4)，新增一个轴
 
 这一章用到的全部接口，按第一次出现的位置列。
 
-| 命令 | 作用 | 讲义哪一节 |
-|---|---|---|
-| `torch.tensor(3.0)` | 造 0 维标量张量；给列表则由数据建张量 | 1 |
-| `torch.arange(4)` | 造一维向量，默认 `int64` | 1 |
-| `torch.arange(20).reshape(5, 4)` | 造矩阵 | 1 |
-| `A.T` | 转置，二维是视图；三维以上翻转所有轴并抛警告 | 2 |
-| `A.clone()` | 复制一份，改副本不影响源张量 | 2 |
-| `A.sum(dim=0)` | 按轴求和，被指定的轴消失 | 4 |
-| `A.mean(dim=0)` | 按轴求均值 | 4 |
-| `A.cumsum(dim=0)` | 按轴求累积和，不降维 | 4 |
-| `keepdim=True` | 让被压掉的轴以长度 1 留在原位 | 4 |
-| `torch.dot(x, y)` | 两个一维张量的点积，只接受一维 | 5 |
-| `torch.mv(A, x)` | 矩阵乘向量，第二个参数必须是一维 | 6 |
-| `torch.mm(A, B)` | 矩阵乘矩阵，只接受两个二维张量 | 3 |
-| `torch.linalg.vector_norm(u)` | 向量的 $L_2$ 范数 | 7 |
-| `torch.linalg.norm(X)` | 矩阵的 Frobenius 范数 | 7 |
-| `torch.abs(u).sum()` | $L_1$ 范数，绝对值再求和 | 7 |
-| `torch.matmul(A, B)` | 任意可广播形状的矩阵乘法，`@` 是它的简写 | 0 |
-| `x.shape` | 形状，类型是 `torch.Size` | 1 |
-| `x.dim()` | 轴数，与 `x.shape[i]` 的“长度”不是一回事 | 1 |
-| `len(x)` | 一维张量给长度，0 维张量报 `TypeError` | 1 |
-| `torch.equal(B, B.T)` | 两个张量是否完全相同，返回单个布尔值 | 2 |
-| `X.transpose(0, 2)` | 只交换指定的两个轴 | 2 |
-| `X.permute(2, 0, 1)` | 按给定顺序重排全部轴 | 2 |
-| `torch.float32` | 显式指定浮点 dtype，范数函数只接受浮点输入 | 3 |
-| `torch.ones(4, 3)` | 造全 1 张量 | 3 |
-| `torch.where(condition, a, b)` | 按条件逐元素在两个张量之间选择，两支都会先算出来 | 4.1 |
-| `torch.zeros_like(x)` | 形状与 dtype 都同 `x` 的全零张量 | 4.1 |
-| `torch.norm(X)` | 已标 deprecated，把全部元素拉平求 $L_2$ | 7 |
-| `torch.linalg.matrix_norm(X)` | 求矩阵范数，替代 `torch.norm` | 7 |
-| `.item()` | 单元素张量取成 Python 数值 | 7 |
-| `A.std(dim=0, keepdim=True)` | 按轴求标准差，形状规则与 `mean` 相同 | 8 |
-| `torch.cat([A, A], dim=0)` | 在已有轴上接长，其余轴长度必须相等 | 8 |
-| `torch.stack([A, A], dim=0)` | 新建一个轴，要求输入形状完全相同 | 8 |
+| 命令                               | 作用                           | 讲义哪一节 |
+| -------------------------------- | ---------------------------- | ----- |
+| `torch.tensor(3.0)`              | 造 0 维标量张量；给列表则由数据建张量         | 1     |
+| `torch.arange(4)`                | 造一维向量，默认 `int64`             | 1     |
+| `torch.arange(20).reshape(5, 4)` | 造矩阵                          | 1     |
+| `A.T`                            | 转置，二维是视图；三维以上翻转所有轴并抛警告       | 2     |
+| `A.clone()`                      | 复制一份，改副本不影响源张量               | 2     |
+| `A.sum(dim=0)`                   | 按轴求和，被指定的轴消失                 | 4     |
+| `A.mean(dim=0)`                  | 按轴求均值                        | 4     |
+| `A.cumsum(dim=0)`                | 按轴求累积和，不降维                   | 4     |
+| `keepdim=True`                   | 让被压掉的轴以长度 1 留在原位             | 4     |
+| `torch.dot(x, y)`                | 两个一维张量的点积，只接受一维              | 5     |
+| `torch.mv(A, x)`                 | 矩阵乘向量，第二个参数必须是一维             | 6     |
+| `torch.mm(A, B)`                 | 矩阵乘矩阵，只接受两个二维张量              | 3     |
+| `torch.linalg.vector_norm(u)`    | 向量的 $L_2$ 范数                 | 7     |
+| `torch.linalg.norm(X)`           | 矩阵的 Frobenius 范数             | 7     |
+| `torch.abs(u).sum()`             | $L_1$ 范数，绝对值再求和              | 7     |
+| `torch.matmul(A, B)`             | 任意可广播形状的矩阵乘法，`@` 是它的简写       | 0     |
+| `x.shape`                        | 形状，类型是 `torch.Size`          | 1     |
+| `x.dim()`                        | 轴数，与 `x.shape[i]` 的“长度”不是一回事 | 1     |
+| `len(x)`                         | 一维张量给长度，0 维张量报 `TypeError`   | 1     |
+| `torch.equal(B, B.T)`            | 两个张量是否完全相同，返回单个布尔值           | 2     |
+| `X.transpose(0, 2)`              | 只交换指定的两个轴                    | 2     |
+| `X.permute(2, 0, 1)`             | 按给定顺序重排全部轴                   | 2     |
+| `torch.float32`                  | 显式指定浮点 dtype，范数函数只接受浮点输入     | 3     |
+| `torch.ones(4, 3)`               | 造全 1 张量                      | 3     |
+| `torch.where(condition, a, b)`   | 按条件逐元素在两个张量之间选择，两支都会先算出来     | 4.1   |
+| `torch.zeros_like(x)`            | 形状与 dtype 都同 `x` 的全零张量       | 4.1   |
+| `torch.norm(X)`                  | 已标 deprecated，把全部元素拉平求 $L_2$ | 7     |
+| `torch.linalg.matrix_norm(X)`    | 求矩阵范数，替代 `torch.norm`        | 7     |
+| `.item()`                        | 单元素张量取成 Python 数值            | 7     |
+| `A.std(dim=0, keepdim=True)`     | 按轴求标准差，形状规则与 `mean` 相同       | 8     |
+| `torch.cat([A, A], dim=0)`       | 在已有轴上接长，其余轴长度必须相等            | 8     |
+| `torch.stack([A, A], dim=0)`     | 新建一个轴，要求输入形状完全相同             | 8     |
 
 ## 自测题
 
