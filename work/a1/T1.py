@@ -18,4 +18,4 @@ class Counter:
 
 
 c = Counter()
-print(c(), c(5), len(c), repr(c))
+print(c(5), c())
