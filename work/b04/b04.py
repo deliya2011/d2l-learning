@@ -3,19 +3,19 @@ import torch
 """
 import torch
 
-x = torch.tensor([1.0, 2.0, 3.0]) #此处错误，非叶子张量x.grad为None，在y.backward()中会报错，应改为x=torch.tensor([1.0, 2.0, 3.0],requires_gard=True) 
+x = torch.tensor([1.0, 2.0, 3.0]) #此处错误，requires_grad没开,应改为x=torch.tensor([1.0, 2.0, 3.0],requires_grad=True) 
 y = (x * 2).sum()
 y.backward()
 print(x.grad)
 
 w = torch.tensor([1.0, 2.0])
 z = w * 3
-z.backward() #此处错误，非标量输出调用backward必须给gradient，否则会报`RuntimeError: grad can be implicitly created only for scalar outputs`，应改为z.backward(torch.ones_like(y))
+z.backward() #此处错误，非标量输出调用backward必须给gradient，否则会报`RuntimeError: grad can be implicitly created only for scalar outputs`，应改为z.backward(torch.ones_like(z))
 
 p = torch.tensor([1.0], requires_grad=True)
 y = (p * 2).sum()
 y.backward()
-p = p - 0.1 * p.grad #此处错误，应写为p-=0.1*p.grad
+p = p - 0.1 * p.grad #此处错误，应写为p-=0.1*p.grad,同时应添加with torch.no_grad():
 """
 
 
