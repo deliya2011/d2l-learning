@@ -9,36 +9,36 @@
 这一章第一次系统出现概率的记号。**不需要会推公式**，但每个记号在说什么要清楚；
 概念在第 1 节从定义讲起，这张表只解决"这个符号是什么意思"。
 
-| 符号 | 怎么读 | 含义 | 哪节用到 |
-|---|---|---|---|
-| $\mathcal{S}$ | 花体 S | 样本空间：所有可能结果的集合 | 1 |
-| $\mathcal{A}$、$B$、$C$ | 花体 A、B、C | 事件：样本空间的子集 | 1、4、5 |
-| $\emptyset$ | 空集 | 不可能事件 | 1 |
-| $P(\mathcal{A})$ | P 括号 A | 事件 $\mathcal{A}$ 发生的概率，取值在 0 到 1 之间 | 1 |
-| $P(A\mid B)$ | P 括号 A 竖线 B | **条件概率**：已知 $B$ 发生时 $A$ 的概率 | 4 |
-| $P(A,B)$ | P 括号 A 逗号 B | **联合概率**：$A$ 与 $B$ 同时发生 | 4 |
-| $\propto$ | 正比于 | 两边只差一个常数因子 | 4 |
-| $X$、$Y$ | 大写字母 | **随机变量**：把结果映射成数的变量 | 2 |
-| $x$ | 小写字母 | 随机变量取到的某个具体值 | 2 |
-| $X_i$、$X_1,\dots,X_n$ | X 下标 i | 第 $i$ 个样本；$n$ 个独立同分布样本 | 3.4 |
-| $\bar X$ | X 上面一横 | 样本均值 $\frac{1}{n}\sum_i X_i$ | 3.4 |
-| $p(x)$ | 小写 p 括号 x | **概率密度**：连续随机变量在 $x$ 附近的密集程度 | 2 |
-| $\mathcal{N}(\mu,\sigma^2)$ | N 括号 | 正态分布：均值 $\mu$、方差 $\sigma^2$ | 0 |
-| $\sim$ | 服从于 | $X\sim\mathcal{N}(0,\sigma^2)$ 表示 $X$ 服从该分布 | 0 |
-| $E[X]$、$E_{x\sim P}[f(x)]$ | E 括号 | **期望**：按概率加权的平均 | 3.1 |
-| $\mathrm{Var}[X]$ | Var 括号 | **方差**：偏离期望的平方的平均 | 3.2 |
-| $\sigma$、$\sigma^2$ | 西格玛 | 标准差 / 方差 | 3.2 |
-| $\mu$ | 缪 | 均值（期望） | 3.1 |
-| $\sum_x$ | 西格玛 | 对所有可能取值求和 | 1、3 |
-| $\prod_t$ | 大 Pi | 连乘：把一串因子乘起来 | 4 |
-| $\int_a^b p(x)\,dx$ | 积分 | 连续情形的"求和"：密度在区间上的累积 | 2 |
-| $\sqrt{n}$、$1/\sqrt{n}$ | 根号 n | 样本量的平方根；波动按这个速度缩小 | 3.4、7 |
-| $\leq$、$\geq$ | 小于等于、大于等于 | 不等式 | 1、6 |
-| $\epsilon$ | 艾普西龙 | 容差、噪声项或小量 | 6 |
-| $\nabla f(\mathbf{x})$ | nabla f | 梯度（B04 讲过） | 6 |
-| $\{1,\dots,6\}$ | 花括号 | 由 1 到 6 组成的集合 | 1 |
-| $\bigcup_i\mathcal{A}_i$ | 大 U | 一串事件的并集 | 1 |
-| $\lvert Y-E[Y]\rvert\geq\epsilon$ | 双竖线 | 绝对值：偏离期望的距离 | 6 |
+| 符号                                | 怎么读         | 含义                                          | 哪节用到  |
+| --------------------------------- | ----------- | ------------------------------------------- | ----- |
+| $\mathcal{S}$                     | 花体 S        | 样本空间：所有可能结果的集合                              | 1     |
+| $\mathcal{A}$、$B$、$C$             | 花体 A、B、C    | 事件：样本空间的子集                                  | 1、4、5 |
+| $\emptyset$                       | 空集          | 不可能事件                                       | 1     |
+| $P(\mathcal{A})$                  | P 括号 A      | 事件 $\mathcal{A}$ 发生的概率，取值在 0 到 1 之间         | 1     |
+| $P(A\mid B)$                      | P 括号 A 竖线 B | **条件概率**：已知 $B$ 发生时 $A$ 的概率                 | 4     |
+| $P(A,B)$                          | P 括号 A 逗号 B | **联合概率**：$A$ 与 $B$ 同时发生                     | 4     |
+| $\propto$                         | 正比于         | 两边只差一个常数因子                                  | 4     |
+| $X$、$Y$                           | 大写字母        | **随机变量**：把结果映射成数的变量                         | 2     |
+| $x$                               | 小写字母        | 随机变量取到的某个具体值                                | 2     |
+| $X_i$、$X_1,\dots,X_n$             | X 下标 i      | 第 $i$ 个样本；$n$ 个独立同分布样本                      | 3.4   |
+| $\bar X$                          | X 上面一横      | 样本均值 $\frac{1}{n}\sum_i X_i$                | 3.4   |
+| $p(x)$                            | 小写 p 括号 x   | **概率密度**：连续随机变量在 $x$ 附近的密集程度                | 2     |
+| $\mathcal{N}(\mu,\sigma^2)$       | N 括号        | 正态分布：均值 $\mu$、方差 $\sigma^2$                 | 0     |
+| $\sim$                            | 服从于         | $X\sim\mathcal{N}(0,\sigma^2)$ 表示 $X$ 服从该分布 | 0     |
+| $E[X]$、$E_{x\sim P}[f(x)]$        | E 括号        | **期望**：按概率加权的平均                             | 3.1   |
+| $\mathrm{Var}[X]$                 | Var 括号      | **方差**：偏离期望的平方的平均                           | 3.2   |
+| $\sigma$、$\sigma^2$               | 西格玛         | 标准差 / 方差                                    | 3.2   |
+| $\mu$                             | 缪           | 均值（期望）                                      | 3.1   |
+| $\sum_x$                          | 西格玛         | 对所有可能取值求和                                   | 1、3   |
+| $\prod_t$                         | 大 Pi        | 连乘：把一串因子乘起来                                 | 4     |
+| $\int_a^b p(x)\,dx$               | 积分          | 连续情形的"求和"：密度在区间上的累积                         | 2     |
+| $\sqrt{n}$、$1/\sqrt{n}$           | 根号 n        | 样本量的平方根；波动按这个速度缩小                           | 3.4、7 |
+| $\leq$、$\geq$                     | 小于等于、大于等于   | 不等式                                         | 1、6   |
+| $\epsilon$                        | 艾普西龙        | 容差、噪声项或小量                                   | 6     |
+| $\nabla f(\mathbf{x})$            | nabla f     | 梯度（B04 讲过）                                  | 6     |
+| $\{1,\dots,6\}$                   | 花括号         | 由 1 到 6 组成的集合                               | 1     |
+| $\bigcup_i\mathcal{A}_i$          | 大 U         | 一串事件的并集                                     | 1     |
+| $\lvert Y-E[Y]\rvert\geq\epsilon$ | 双竖线         | 绝对值：偏离期望的距离                                 | 6     |
 
 三句话记住主干：**概率**是"事件到 0–1 的函数"；**期望**是"按概率加权的平均"；
 **方差**是"偏离期望的平方的平均"。另外两个记号容易混：$P(A\mid B)$ 是条件概率，
@@ -315,18 +315,18 @@ rolls = torch.multinomial(probs, 100, replacement=True)   # 不必传 generator
 
 这一章用到的全部接口，按第一次出现的位置列。本单元只有第 9 节有代码，其余各节是公式与推导。
 
-| 命令 | 作用 | 讲义哪一节 |
-|---|---|---|
-| `multinomial.Multinomial(1, fair_probs).sample()` | 掷一次六面骰子，返回长度为 6 的次数向量 | 9 |
-| `multinomial.Multinomial(10, fair_probs).sample((500,))` | 掷 10 次并重复 500 轮，返回 `(500, 6)` 张量，每行之和为 10 | 9 |
-| `counts.cumsum(dim=0)` | 按轮累加计数 | 9 |
-| `cum_counts.sum(dim=1, keepdim=True)` | 按行求和并保留轴，便于广播相除 | 9 |
-| `estimates[:, i].numpy()` | 取第 i 列的估计值并转成 NumPy 数组 | 9 |
-| `from torch.distributions import multinomial` | 导入多项分布模块，`Multinomial` 在它下面 | 9 |
-| `torch.bincount(x, minlength=n)` | 统计非负整数张量里每个取值出现多少次 | 9 |
-| `torch.tensor([0, 2, 2, 5])` | 建整数张量，示例里表示四次掷骰的结果 | 9 |
-| `torch.multinomial(probs, num_samples, replacement=True, generator=g)` | 底层采样，可指定随机数发生器 | 9 |
-| `torch.Generator().manual_seed(0)` | 固定随机数种子，让采样可复现 | 9 |
+| 命令                                                                     | 作用                                        | 讲义哪一节 |
+| ---------------------------------------------------------------------- | ----------------------------------------- | ----- |
+| `multinomial.Multinomial(1, fair_probs).sample()`                      | 掷一次六面骰子，返回长度为 6 的次数向量                     | 9     |
+| `multinomial.Multinomial(10, fair_probs).sample((500,))`               | 掷 10 次并重复 500 轮，返回 `(500, 6)` 张量，每行之和为 10 | 9     |
+| `counts.cumsum(dim=0)`                                                 | 按轮累加计数                                    | 9     |
+| `cum_counts.sum(dim=1, keepdim=True)`                                  | 按行求和并保留轴，便于广播相除                           | 9     |
+| `estimates[:, i].numpy()`                                              | 取第 i 列的估计值并转成 NumPy 数组                    | 9     |
+| `from torch.distributions import multinomial`                          | 导入多项分布模块，`Multinomial` 在它下面               | 9     |
+| `torch.bincount(x, minlength=n)`                                       | 统计非负整数张量里每个取值出现多少次                        | 9     |
+| `torch.tensor([0, 2, 2, 5])`                                           | 建整数张量，示例里表示四次掷骰的结果                        | 9     |
+| `torch.multinomial(probs, num_samples, replacement=True, generator=g)` | 底层采样，可指定随机数发生器                            | 9     |
+| `torch.Generator().manual_seed(0)`                                     | 固定随机数种子，让采样可复现                            | 9     |
 
 `Multinomial` 的 `total_count` 必须是整数，传 `1.0` 会报 `NotImplementedError`，用法见第 9 节。
 
