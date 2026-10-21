@@ -6,7 +6,7 @@ p_a = 0.3
 p_b = 0.4
 
 # 下面这行想算出 P(A 且 B)，也就是联合概率
-p_a_and_b = p_a + p_b #此行错误，这是P(a|b)的公式，应改为p_a_and_b = p_a * p_b
+p_a_and_b = p_a + p_b #此行错误，"相加"对应的是互斥，不是条件概率。应改为p_a_and_b = p_a * p_b
 
 counts = torch.tensor([1.0, 2.0, 3.0, 4.0, 5.0, 6.0])
 probs = counts #此行错误，counts的这几个数的总和不为1，不是概率，应该改为：probs = counts / counts.sum()
@@ -17,7 +17,6 @@ E = values.mean() #期望值 E 算的是"无权平均"，忽略了 weights ,应�
 """
 
 import torch
-from torch.distributions import multinomial
 
 
 def roll_and_estimate(n_rolls: int, seed: int = 0) -> torch.Tensor:
