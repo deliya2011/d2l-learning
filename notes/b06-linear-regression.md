@@ -372,8 +372,69 @@ class 你的模型名(nn.Module):
 1. **`super().__init__()` 必须第一句调用。** `nn.Module` 的初始化里建立了参数登记机制，
    不调它，后面给 `self` 挂参数会报错。
 2. **`forward` 定义前向怎么算**，输入输出都是张量。
-3. **要训练的量必须包成 `nn.Parameter`。** 写成 `self.w = torch.zeros(2, 1)` 也能跑，
-   但它不会出现在 `net.parameters()` 里，优化器看不到它，训练时它永远不动。
+3. **要训练的量必须包成 `nn.Parameter`。** 见下面 5.1.1.1 节。
+
+#### 5.1.1.1 `nn.Parameter` 是什么
+
+它是 `Tensor` 的**子类**，比普通张量多做两件事：
+
+1. **自动开 `requires_grad`**。`nn.Parameter(torch.zeros(2, 1))` 建出来就是
+   `requires_grad=True`，不必再写 `requires_grad_(True)`。
+2. **登记进模型**。把它赋值给 `nn.Module` 的属性时（`self.w = nn.Parameter(...)`），
+   `nn.Module` 的 `__setattr__` 会把它记进参数表。于是 `parameters()` 能遍历到它、
+   `state_dict()` 能保存它、`.to(device)` 把它一起搬走。
+
+**怎么访问**：
+
+| 想做什么 | 写法 |
+|---|---|
+| 拿到参数（它本身就是张量） | `net.w` |
+| 遍历全部参数 | `net.parameters()` |
+| 遍历"名字 → 参数" | `net.named_parameters()` |
+| 拿值且不带计算图 | `net.w.detach()` |
+| 形状、元素个数 | `net.w.shape`、`net.w.numel()` |
+| 手动改值 | `with torch.no_grad(): net.w.fill_(0)` |
+
+**为什么普通张量不行**：写成 `self.w = torch.zeros(2, 1)` 也能跑，但 `__setattr__`
+只把 `nn.Parameter` 登记进参数表，普通张量被当成普通属性，`parameters()` 遍历不到，
+优化器拿不到它，训练时永远不动。**不报错**，这是它难查的原因。
+
+**一处容易混**：`net.w` 是张量，可以直接参与运算；要当纯数据用（打印、转 numpy、画图）
+先 `.detach()`，否则它带着计算图（B04 的 5.5 节）。
+
+#### 5.1.1.2 `.to(device)` 会把叶子张量变成非叶子
+
+这是把模型搬到 GPU 时最常踩的坑。
+
+`.to(device)` 在目标设备**与当前不同**时会复制张量，而这个复制**带 `grad_fn`**
+（`ToCopyBackward0`），结果**不是叶子张量**。PyTorch 只给叶子张量填 `.grad`，
+非叶子的 `.grad` 恒为 `None`，于是 `lr * p.grad` 会报
+`TypeError: unsupported operand type(s) for *: 'float' and 'NoneType'`。
+
+实测（在有显卡的机器上）：
+
+| 写法 | `is_leaf` | `grad_fn` |
+|---|---|---|
+| `torch.randn(3, 4, requires_grad=True)` | `True` | `None` |
+| 上一行 `.to("cuda")` | `False` | `ToCopyBackward0` |
+| 再 `.requires_grad_()` | `False` | 同上（这个方法不改 `is_leaf`）|
+
+**为什么在 CPU 上不报错**：目标设备与当前相同时 `.to()` 是恒等操作，直接返回 `self`，
+不产生副本。所以 `.to("cpu")` 对已在 CPU 的张量是安全的，`.to("cuda")` 不是。
+这解释了"同一份代码在 CPU 上跑得通，在 GPU 上报 TypeError"。
+**本机没有显卡**，这一节只需记住结论，不必实测。
+
+**三种避开方式**：
+
+1. **建的时候就在目标设备上**：`torch.normal(..., device=device)`。没有搬运这一步，
+   最干净
+2. **用 `nn.Parameter` 包一层**：`nn.Parameter(w.to(device))`。`nn.Parameter` 建出来就是叶子
+3. `w.data.to(device).requires_grad_()`：`.data` 脱离计算图，不产生 `grad_fn`
+
+排查方法：打印 `p.is_leaf`。`False` 就说明它被某个带梯度的操作加工过。
+
+`nn.Linear` 里的参数就是用它建的：`weight` 与 `bias` 都是 `nn.Parameter`。
+所以 `net[0].weight` 拿到的也是 `nn.Parameter`，访问方式与上面一样。
 
 **参数在哪**：`net.parameters()` 是生成器，遍历模型里全部 `nn.Parameter`。
 `torch.optim.SGD(net.parameters(), lr=...)` 就是靠它拿到要更新的量。
