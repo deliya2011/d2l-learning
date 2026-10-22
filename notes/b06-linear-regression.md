@@ -49,12 +49,20 @@
 
 $$\hat{y} = x_1 w_1 + x_2 w_2 + b .$$
 
+这个式子在算一条直线的预测值：两个特征各乘一个权重再相加，最后加上偏置。
+
 $x_1$、$x_2$ 是输入（特征），$w_1$、$w_2$ 是权重，$b$ 是偏置，$\hat{y}$ 是预测值。
-换成向量写法：$\hat{\mathbf{x}} \in \mathbb{R}^2$、$\mathbf{w}\in\mathbb{R}^2$，$\hat{y}=\mathbf{w}^\top\mathbf{x}+b$。
+换成向量写法：$\mathbf{x} \in \mathbb{R}^2$、$\mathbf{w}\in\mathbb{R}^2$，$\hat{y}=\mathbf{w}^\top\mathbf{x}+b$。
+
+这个式子在把逐项相加缩成一个内积：$\mathbf{w}^\top\mathbf{x}$ 就是 $w_1x_1+w_2x_2$。
+$\mathbf{w}$ 要转置，是因为书里约定向量都是列向量，行乘列才得到标量（列乘列是外积，结果是矩阵）。
 
 整批样本一起算就是矩阵形式。$\mathbf{X}\in\mathbb{R}^{n\times d}$（$n$ 个样本、$d$ 个特征）：
 
 $$\hat{\mathbf{y}} = \mathbf{X}\mathbf{w} + b .$$
+
+这个式子在算**一整批**样本的预测值：$n$ 行乘 $d$ 列的矩阵一次乘完，结果是 $n$ 个预测值，
+不必逐样本循环。
 
 **这里有件事要提前说清**：这个式子是**人先假设的**，不是从数据里推出来的。
 假设"特征与标签成线性关系"，然后在所有直线里挑一条最好的。
@@ -69,11 +77,11 @@ $w$ 与 $b$ 的取值决定具体是哪一条。
 
 训练过程里有三样东西容易混：
 
-| 名字 | 是什么 | 谁决定 |
-|---|---|---|
-| 特征 $\mathbf{X}$、标签 $\mathbf{y}$ | 数据，给定的 | 数据集 |
-| 参数 $\mathbf{w}$、$b$ | 模型里要被学出来的量 | 训练过程 |
-| 超参数（批量大小、学习率、迭代轮数） | 控制训练怎么进行的量 | 你 |
+| 名字                              | 是什么        | 谁决定  |
+| ------------------------------- | ---------- | ---- |
+| 特征 $\mathbf{X}$、标签 $\mathbf{y}$ | 数据，给定的     | 数据集  |
+| 参数 $\mathbf{w}$、$b$             | 模型里要被学出来的量 | 训练过程 |
+| 超参数（批量大小、学习率、迭代轮数）              | 控制训练怎么进行的量 | 你    |
 
 前两样的区别在 B01 讲过（判据是梯度下降会不会改它）。第三样是这一章新出现的：
 它们不参与求导，是你先定下来再观察效果的。
@@ -86,14 +94,23 @@ $w$ 与 $b$ 的取值决定具体是哪一条。
 
 $$\ell^{(i)}(w_1, w_2, b) = \frac{1}{2}\left(\hat{y}^{(i)} - y^{(i)}\right)^2 .$$
 
+这个式子在量**一个样本**错得多离谱：预测值与真实值之差取平方（正负都算错），乘 $\frac{1}{2}$
+是为了后面求导时与平方掉下来的 2 约掉。
+
 整个数据集上取平均：
 
 $$\ell(\mathbf{w}, b) = \frac{1}{n}\sum_{i=1}^n \ell^{(i)}(\mathbf{w}, b)
 = \frac{1}{2n}\sum_{i=1}^n \left(\mathbf{w}^\top\mathbf{x}^{(i)} + b - y^{(i)}\right)^2 .$$
 
+这个式子在量**整个数据集**错得多离谱：把 $n$ 个样本的误差平方加起来再除以 $n$，
+得到一个数。训练要压低的正是这个数。
+
 训练的目标就是找一组让这个数最小的参数：
 
 $$\mathbf{w}^*, b^* = \operatorname*{argmin}_{\mathbf{w}, b}\ \ell(\mathbf{w}, b) .$$
+
+这个式子在写**训练目标**：在所有可能的 $\mathbf{w}$、$b$ 里，挑出让平均误差最小的那一组，
+记作 $\mathbf{w}^*$、$b^*$。$\operatorname{argmin}$ 返回的是「取到最小值时的参数」，不是最小值本身。
 
 ### 2.1 三个问题
 
@@ -117,16 +134,25 @@ $$\mathbf{w}^*, b^* = \operatorname*{argmin}_{\mathbf{w}, b}\ \ell(\mathbf{w}, b
 
 $$\mathbf{y} = \mathbf{X}\mathbf{w} + b + \boldsymbol{\epsilon},$$
 
+这个式子在描述**数据是怎么来的**：真实标签等于线性部分再加一个噪声项。
+噪声是观测不到的偏差（测量误差、漏掉的特征等），这一节假设它服从正态分布。
+
 其中噪声 $\boldsymbol{\epsilon}$ 服从均值为 0、标准差为 $\sigma$ 的正态分布。
 在这个假设下，"给定 $\mathbf{X}$ 时观测到 $\mathbf{y}$ 的概率"是
 
 $$P(\mathbf{y}\mid\mathbf{X}) = \prod_{i=1}^n \frac{1}{\sqrt{2\pi}\sigma}
 \exp\left(-\frac{1}{2\sigma^2}\left(\hat{y}^{(i)} - y^{(i)}\right)^2\right) .$$
 
+这个式子在算**似然**：参数给定、输入给定时，观测到眼前这组标签的概率。
+每个样本的概率乘起来，是因为假设样本之间独立（独立事件的联合概率等于各自概率之积）。
+
 想让这组数据出现的可能性最大，就要最大化这个乘积。取对数（单调变换，不改变最大值在哪）：
 
 $$-\log P(\mathbf{y}\mid\mathbf{X}) = \frac{n}{2}\log(2\pi\sigma^2)
 + \frac{1}{2\sigma^2}\sum_{i=1}^n \left(\hat{y}^{(i)} - y^{(i)}\right)^2 .$$
+
+这个式子在把**连乘变成求和**：取对数后，乘积拆成加法，指数里的误差平方露了出来。
+第一项与参数无关，所以让这个式子最小，等价于让第二项的误差平方和最小。
 
 第一项与参数无关。所以**最大化似然等价于最小化平方误差之和**。
 
@@ -142,6 +168,9 @@ $$-\log P(\mathbf{y}\mid\mathbf{X}) = \frac{n}{2}\log(2\pi\sigma^2)
 
 $$\mathbf{w} \leftarrow \mathbf{w} - \eta \nabla_{\mathbf{w}} \ell(\mathbf{w}, b),$$
 
+这个式子在写**一步更新**：沿着梯度的反方向挪一小段，挪多远由学习率 $\eta$ 决定。
+箭头 $\leftarrow$ 表示「用右边算出的新值覆盖左边」，不是数学上的相等。
+
 $\eta$ 是学习率，控制每步走多远。
 
 ### 3.1 为什么不用全部样本算梯度
@@ -156,6 +185,9 @@ $\eta$ 是学习率，控制每步走多远。
 
 $$\mathbf{w} \leftarrow \mathbf{w} - \frac{\eta}{|\mathcal{B}|}
 \sum_{i\in\mathcal{B}} \nabla_{\mathbf{w}} \ell^{(i)}(\mathbf{w}, b).$$
+
+这个式子在写**小批量**版本的一步更新：只抽 $|\mathcal{B}|$ 个样本，把它们的梯度加起来除以个数，
+当作全量梯度的估计，再按学习率走一步。
 
 书上的写法是 $\boldsymbol{\theta} \leftarrow \boldsymbol{\theta} - \frac{\eta}{|\mathcal{B}|}
 \sum_{i \in \mathcal{B}} \nabla_{\boldsymbol{\theta}} \ell^{(i)}(\boldsymbol{\theta})$，
@@ -198,6 +230,9 @@ $\eta$ 是这一章最需要手调的超参数：
 
 生成方式是 $\mathbf{y} = \mathbf{X}\mathbf{w} + b + \boldsymbol{\epsilon}$，
 $\mathbf{X}$ 的每个元素从标准正态分布抽。
+
+这组真参数（$[2,-3.4]^\top$ 与 $4.2$）是造数据时写死的；训练时它们对模型不可见，
+任务就是只凭 $(\mathbf{X},\mathbf{y})$ 把这两个量估回来，最后与原值对比。
 
 **torch 里怎么造**：`torch.normal(mean, std, size=...)` 返回指定形状的张量，
 `torch.zeros(size)` 给全零。
@@ -242,6 +277,9 @@ $(d,)$，那时 `X @ w` 得到 $(n,)$——两种都行，但**同一个脚本�
 `sgd(params, lr, batch_size)` 对每个参数做
 
 $$p \leftarrow p - \frac{\eta}{|\mathcal{B}|}\, p.\text{grad} .$$
+
+这个式子在写**代码里的一步**：对每个参数 $p$，沿它自己的梯度反方向更新；
+除以 $|\mathcal{B}|$ 是因为 `loss` 是这一批的和，`backward()` 给出的梯度也是和，要变回平均。
 
 三处要注意：
 
