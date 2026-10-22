@@ -189,8 +189,8 @@ $$\mathbf{w} \leftarrow \mathbf{w} - \frac{\eta}{|\mathcal{B}|}
 这个式子在写**小批量**版本的一步更新：只抽 $|\mathcal{B}|$ 个样本，把它们的梯度加起来除以个数，
 当作全量梯度的估计，再按学习率走一步。
 
-书上的写法是 $\boldsymbol{\theta} \leftarrow \boldsymbol{\theta} - \frac{\eta}{|\mathcal{B}|}
-\sum_{i \in \mathcal{B}} \nabla_{\boldsymbol{\theta}} \ell^{(i)}(\boldsymbol{\theta})$，
+书上的写法是$$\boldsymbol{\theta} \leftarrow \boldsymbol{\theta} - \frac{\eta}{|\mathcal{B}|}
+\sum_{i \in \mathcal{B}} \nabla_{\boldsymbol{\theta}} \ell^{(i)}(\boldsymbol{\theta})$$，
 把 $\mathbf{w}$ 和 $b$ 合起来用 $\boldsymbol{\theta}$ 表示。
 
 **为什么行得通**：小批量的平均梯度是完整梯度的无偏估计，这一点在 B05 第 6 节证明过。
