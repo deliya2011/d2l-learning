@@ -234,8 +234,46 @@ $\mathbf{X}$ 的每个元素从标准正态分布抽。
 这组真参数（$[2,-3.4]^\top$ 与 $4.2$）是造数据时写死的；训练时它们对模型不可见，
 任务就是只凭 $(\mathbf{X},\mathbf{y})$ 把这两个量估回来，最后与原值对比。
 
-**torch 里怎么造**：`torch.normal(mean, std, size=...)` 返回指定形状的张量，
-`torch.zeros(size)` 给全零。
+**torch 里怎么造**：见下面 4.1.1 节；`torch.zeros(size)` 给全零。
+
+### 4.1.1 随机数怎么造
+
+T1 要造两处随机：特征 $\mathbf{X}$（标准正态）与噪声 $\boldsymbol{\epsilon}$
+（均值 0、标准差 0.01）。而且同一个 seed 必须给出完全相同的结果。用到的 API 有四个。
+
+**`torch.randn(size)`**：从**标准正态**（均值 0、标准差 1）抽 `size` 指定形状。
+
+```python
+X = torch.randn(3, 2)        # (3, 2)，每个元素 ~ N(0, 1)
+```
+
+**`torch.normal(mean, std, size=...)`**：`mean` 与 `std` 是**标量**时，用 `size` 指定形状。
+注意参数名是 `std`，不是"方差"；`size` 是关键字参数。
+
+```python
+eps = torch.normal(0.0, 0.01, size=(3, 2))   # (3, 2)，每个元素 ~ N(0, 0.01)
+```
+
+**`torch.normal(mean_tensor, std_tensor)`**：`mean` 与 `std` 是**张量**时，逐元素从各自的
+$N(\text{mean}_i,\text{std}_i)$ 抽。这种形式**不能再传 `size`**（传了会报
+`torch.normal received invalid argument combination`），形状由两个张量广播决定。
+
+**可复现**：随机数发生器要自己建一个并设种子。
+
+```python
+g = torch.Generator().manual_seed(0)
+X = torch.randn(3, 2, generator=g)
+eps = torch.normal(0.0, 0.01, size=(3, 2), generator=g)
+```
+
+`generator=g` 是关键字参数，两个函数都收。**不要在函数里调 `torch.manual_seed`**——
+那会改全局状态，影响调用者；传自己的 `Generator` 才不会互相干扰。
+
+**三个容易踩的点**：
+
+1. `torch.normal(0.0, 0.01, size=...)` 的第二个参数是**标准差**；要方差 0.01 时标准差是 0.1
+2. 用 `torch.randn` 造 $N(0,\sigma)$ 时写成 `torch.randn(size) * sigma`，比 `torch.normal` 少一个形状参数
+3. `torch.normal` 的张量形式与标量形式是两套签名，混用会报错
 
 ### 4.2 读数据：`data_iter`
 
@@ -608,7 +646,10 @@ for epoch in range(num_epochs):
 
 | 命令 | 作用 | 讲义哪一节 |
 |---|---|---|
-| `torch.normal(mean, std, size=...)` | 按正态分布生成张量 | 4.1 |
+| `torch.normal(mean, std, size=...)` | 标量形式的正态采样 | 4.1.1 |
+| `torch.normal(mean_tensor, std_tensor)` | 逐元素正态采样，不能传 `size` | 4.1.1 |
+| `torch.randn(size)` | 标准正态采样 | 4.1.1 |
+| `torch.Generator().manual_seed(seed)` | 建独立的随机数发生器并设种子 | 4.1.1 |
 | `torch.zeros(size)` | 全零张量 | 4.3 |
 | `torch.arange(n)` | 生成下标序列 | 4.2 |
 | `torch.randperm(n)` | 随机排列 0 到 n-1 | 4.2 |
