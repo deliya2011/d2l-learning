@@ -396,12 +396,12 @@ from torch.utils.data import DataLoader, TensorDataset
 
 ### 5.1 四个替换
 
-| 自己写的 | 框架里的 | 说明 |
-|---|---|---|
-| `data_iter` | `DataLoader(dataset, batch_size, shuffle=True)` | 需要先把数据包成 `TensorDataset` |
-| `linreg` | `nn.Linear(in_features, out_features)` | 内部持有 `weight` 与 `bias` 两个 `nn.Parameter` |
-| `squared_loss` | `nn.MSELoss()` | 均方误差，注意它默认取平均（与书上的写法差一个 2） |
-| `sgd` | `torch.optim.SGD(net.parameters(), lr=...)` | `optimizer.step()` 更新，`optimizer.zero_grad()` 清零 |
+| 自己写的           | 框架里的                                            | 说明                                               |
+| -------------- | ----------------------------------------------- | ------------------------------------------------ |
+| `data_iter`    | `DataLoader(dataset, batch_size, shuffle=True)` | 需要先把数据包成 `TensorDataset`                         |
+| `linreg`       | `nn.Linear(in_features, out_features)`          | 内部持有 `weight` 与 `bias` 两个 `nn.Parameter`         |
+| `squared_loss` | `nn.MSELoss()`                                  | 均方误差，注意它默认取平均（与书上的写法差一个 2）                       |
+| `sgd`          | `torch.optim.SGD(net.parameters(), lr=...)`     | `optimizer.step()` 更新，`optimizer.zero_grad()` 清零 |
 
 `nn.Linear(2, 1)` 的 `weight` 形状是 `(1, 2)`、`bias` 是 `(1,)`——
 注意它把输出维度放在前面，与你手写时 `(2, 1)` 的约定相反。这是 `nn.Linear` 的约定，
