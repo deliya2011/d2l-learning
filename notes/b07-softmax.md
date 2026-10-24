@@ -9,29 +9,29 @@ B06 解决的是"预测一个数"，这一章解决"预测是哪一类"。改动
 > 若仍出现旧版章节号（如 11.2.x、附录），是沿用早期版本的写法，**以“在线（第二版）”一列为准**；
 > 下次修订会把两列合并。
 
-| 讲义小节 | 纸质书（第二版） | 电子版（第二版） |
-|---|---|---|
-| 1 从回归到分类 | 3.4 分类问题 | [3.4 softmax 回归](https://zh.d2l.ai/chapter_linear-networks/softmax-regression.html) 的分类问题 |
-| 2 模型：从线性输出到概率分布 | 3.4 softmax 回归模型、softmax 运算、单样本与小批量的矢量表达式 | 3.4 的"softmax 运算"、"矢量化" |
-| 3 损失：交叉熵 | 3.4 交叉熵损失函数 | 3.4 的"损失函数"、"信息论基础"（后者是补充） |
-| 4 数据集：Fashion-MNIST | 3.5 图像分类数据集 | [3.5 图像分类数据集](https://zh.d2l.ai/chapter_linear-networks/image-classification-dataset.html) |
-| 5 从零实现 | 3.6 softmax 回归的从零开始实现 | [3.6 从零开始实现](https://zh.d2l.ai/chapter_linear-networks/softmax-regression-scratch.html) |
-| 6 简洁实现 | 3.7 softmax 回归的简洁实现 | [3.7 简洁实现](https://zh.d2l.ai/chapter_linear-networks/softmax-regression-concise.html) |
-| 7 评估：精度 | 3.4 的"模型预测及评价"、3.6 的"计算分类准确率" | 3.4 的"模型预测和评估"、3.6 的"分类精度" |
-| 7.1 混淆矩阵 | 无，本节补充 | 无，本节补充 |
-| 8 实现会踩的坑 | 散在两版正文里，本节汇总 | 同上 |
-| 自测题 | 无 | 无 |
+| 讲义小节                | 纸质书（第二版）                                  | 电子版（第二版）                                                                                   |
+| ------------------- | ----------------------------------------- | ------------------------------------------------------------------------------------------ |
+| 1 从回归到分类            | 3.4 分类问题                                  | [3.4 softmax 回归](https://zh.d2l.ai/chapter_linear-networks/softmax-regression.html) 的分类问题  |
+| 2 模型：从线性输出到概率分布     | 3.4 softmax 回归模型、softmax 运算、单样本与小批量的矢量表达式 | 3.4 的"softmax 运算"、"矢量化"                                                                    |
+| 3 损失：交叉熵            | 3.4 交叉熵损失函数                               | 3.4 的"损失函数"、"信息论基础"（后者是补充）                                                                 |
+| 4 数据集：Fashion-MNIST | 3.5 图像分类数据集                               | [3.5 图像分类数据集](https://zh.d2l.ai/chapter_linear-networks/image-classification-dataset.html) |
+| 5 从零实现              | 3.6 softmax 回归的从零开始实现                     | [3.6 从零开始实现](https://zh.d2l.ai/chapter_linear-networks/softmax-regression-scratch.html)    |
+| 6 简洁实现              | 3.7 softmax 回归的简洁实现                       | [3.7 简洁实现](https://zh.d2l.ai/chapter_linear-networks/softmax-regression-concise.html)      |
+| 7 评估：精度             | 3.4 的"模型预测及评价"、3.6 的"计算分类准确率"             | 3.4 的"模型预测和评估"、3.6 的"分类精度"                                                                 |
+| 7.1 混淆矩阵            | 无，本节补充                                    | 无，本节补充                                                                                     |
+| 8 实现会踩的坑            | 散在两版正文里，本节汇总                              | 同上                                                                                         |
+| 自测题                 | 无                                         | 无                                                                                          |
 
 3.4–3.7 有代码，是 PyTorch；损失用 `nn.CrossEntropyLoss`，它**内含 softmax**——这一点在 6.2 节展开。
 
 **解锁点**：书里这一章有四个函数（第二版在 `d2l` 包里）标着"已保存在包中方便以后使用"：
 
-| 函数 | 在哪一节 | 做什么 |
-|---|---|---|
-| `get_fashion_mnist_labels` | 3.5 | 把 0 到 9 的标签转成文本名 |
-| `show_fashion_mnist` | 3.5 | 一行里画出多张图与对应标签 |
-| `evaluate_accuracy` | 3.6 | 模型在整个数据集上的准确率 |
-| `train_ch3` | 3.6 | 完整的训练过程（同时支持从零与简洁两条路） |
+| 函数                         | 在哪一节 | 做什么                   |
+| -------------------------- | ---- | --------------------- |
+| `get_fashion_mnist_labels` | 3.5  | 把 0 到 9 的标签转成文本名      |
+| `show_fashion_mnist`       | 3.5  | 一行里画出多张图与对应标签         |
+| `evaluate_accuracy`        | 3.6  | 模型在整个数据集上的准确率         |
+| `train_ch3`                | 3.6  | 完整的训练过程（同时支持从零与简洁两条路） |
 
 按仓库规则，在书上出现那句话之前要自己写。第 5 节会说明每个函数要做什么，
 但不给可以直接抄的实现；后两个是这一章代码题的核心。
@@ -321,12 +321,12 @@ $$\operatorname{logsumexp}(\mathbf{o}) = m + \log \sum_k \exp(o_k - m),\qquad m 
 
 实测（`logits = [0, -30]`，正确类别是索引 1）：
 
-| 做法 | 结果 |
-|---|---|
-| softmax 在正确类别上的概率 | `9.36e-14` |
-| 朴素写法加 `clamp_min(1e-12)` | `27.631` |
-| 用 logsumexp 的稳定式 | `30.0` |
-| PyTorch 的 `CrossEntropyLoss` | `30.0` |
+| 做法                           | 结果         |
+| ---------------------------- | ---------- |
+| softmax 在正确类别上的概率            | `9.36e-14` |
+| 朴素写法加 `clamp_min(1e-12)`     | `27.631`   |
+| 用 logsumexp 的稳定式             | `30.0`     |
+| PyTorch 的 `CrossEntropyLoss` | `30.0`     |
 
 截断把概率从 `9.36e-14` 抬到 `1e-12`，损失跟着从 30 掉到 27.63，差 2.37。
 它让程序不崩，但算出来的不是交叉熵。

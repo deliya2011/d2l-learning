@@ -264,7 +264,7 @@ $N(\text{mean}_i,\text{std}_i)$ 抽。这种形式**不能再传 `size`**（传�
 g = torch.Generator().manual_seed(0)
 X = torch.randn(3, 2, generator=g)
 eps = torch.normal(0.0, 0.01, size=(3, 2), generator=g)
-```
+形式。$\mathbf{X}\in\mathbb{R}^{n\times d}$（￼𝑛￼ 个样本、￼𝑑￼ 个特征）：```
 
 `generator=g` 是关键字参数，两个函数都收。**不要在函数里调 `torch.manual_seed`**——
 那会改全局状态，影响调用者；传自己的 `Generator` 才不会互相干扰。
