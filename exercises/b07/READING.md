@@ -30,12 +30,12 @@
 
 ## 三处要留意
 
-**解锁点**：纸质书这一章有四个函数标着"本函数已保存在 d2lzh 包中方便以后使用"——
+**解锁点**：书里这一章有四个函数（第二版在 `d2l` 包里）标着"已保存在包中方便以后使用"——
 `get_fashion_mnist_labels`、`show_fashion_mnist`（3.5）、`evaluate_accuracy`、`train_ch3`（3.6）。
-按仓库规则，在书上出现那句话之前要自己写。
+按仓库规则，讲义与题目要求手写的地方不许直接调 `d2l`，这四个要自己写。
 
-**`CrossEntropyLoss` 内含 softmax**：纸质书用的 Gluon 版损失与 torch 的
-`nn.CrossEntropyLoss` 都是接收 logits、内部做 softmax 的。讲义 6.2 节有实测数据。
+**`CrossEntropyLoss` 内含 softmax**：torch 的 `nn.CrossEntropyLoss` 接收的是 **logits**，
+内部做 softmax，不需要你先手动 softmax。讲义 6.2 节有实测数据。
 这一条最容易出错，出错不报错，只是训练变慢。
 
 **数值稳定性**：纸质书没展开讲，讲义 5.2 节有实测（朴素写法在 logits=1000 时给出 `nan`）。
