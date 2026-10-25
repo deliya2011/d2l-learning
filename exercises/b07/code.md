@@ -65,13 +65,13 @@ def cross_entropy(logits: torch.Tensor, y: torch.Tensor) -> torch.Tensor:
     """
 ```
 
-| 调用 | 期望 |
-|---|---|
-| `softmax(torch.tensor([[1000.0, 0.0]]))` | `tensor([[1., 0.]])`，不能是 nan |
-| `softmax(torch.zeros(3, 4))` | 每一行都是 0.25 |
-| `softmax(torch.randn(5, 10)).sum(dim=1)` | 每个元素都接近 1 |
-| `cross_entropy(torch.tensor([[2.0, 1.0, 0.1]]), torch.tensor([0]))` | 约 `0.41703` |
-| `cross_entropy(logits, y)` 与 `nn.CrossEntropyLoss(reduction="sum")(logits, y)` | 数值一致（允许 1e-5 误差） |
+| 调用                                                                             | 期望                           |
+| ------------------------------------------------------------------------------ | ---------------------------- |
+| `softmax(torch.tensor([[1000.0, 0.0]]))`                                       | `tensor([[1., 0.]])`，不能是 nan |
+| `softmax(torch.zeros(3, 4))`                                                   | 每一行都是 0.25                   |
+| `softmax(torch.randn(5, 10)).sum(dim=1)`                                       | 每个元素都接近 1                    |
+| `cross_entropy(torch.tensor([[2.0, 1.0, 0.1]]), torch.tensor([0]))`            | 约 `0.41703`                  |
+| `cross_entropy(logits, y)` 与 `nn.CrossEntropyLoss(reduction="sum")(logits, y)` | 数值一致（允许 1e-5 误差）             |
 
 第二张表最后一行是自查办法：拿框架的结果对自己的。注意对照的是 `reduction="sum"`，
 因为这里的约定是返回和，与 B06 的 `squared_loss` 一致——除以批量大小那一步放在 `sgd` 里做，
