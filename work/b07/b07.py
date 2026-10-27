@@ -15,3 +15,7 @@ def cross_entropy(logits: torch.Tensor, y: torch.Tensor) -> torch.Tensor:
     correct_y = logits.gather(1, y.unsqueeze(1)).squeeze(1)
     loss = (logsumexp - correct_y).sum()
     return loss
+
+
+def accuracy(logits: torch.Tensor, y: torch.Tensor) -> float:
+    logits.argmax(dim=1)
