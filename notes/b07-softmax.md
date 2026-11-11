@@ -391,7 +391,7 @@ from torch.utils.data import DataLoader
 from torchvision import datasets, transforms
 ```
 
-与第 5 节一样，只是这回 `nn` 要用上。net = lambda x: x @ w + b 
+与第 5 节一样，只是这回 `nn` 要用上。
 
 ### 6.1 与 B06 的对照
 
