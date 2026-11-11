@@ -9,15 +9,15 @@
 > 若仍出现旧版章节号（如 11.2.x、附录），是沿用早期版本的写法，**以“在线（第二版）”一列为准**；
 > 下次修订会把两列合并。
 
-| 讲义小节 | 纸质书（第二版） | 电子版（第二版） |
-|---|---|---|
-| 1 模型：从假设到表达式 | 3.1 线性回归的基本要素（模型） | [3.1 线性回归](https://zh.d2l.ai/chapter_linear-networks/linear-regression.html) 的"线性回归的基本元素" |
-| 2 损失函数：为什么是平方误差 | 3.1 的"损失函数" | 3.1 的"正态分布与平方损失" |
-| 3 优化：小批量随机梯度下降 | 3.1 的"优化算法" | 3.1 的"解析解"与"小批量随机梯度下降" |
-| 4 从零实现 | 3.2 线性回归的从零开始实现 | [3.2 线性回归的从零开始实现](https://zh.d2l.ai/chapter_linear-networks/linear-regression-scratch.html) |
-| 5 简洁实现 | 3.3 线性回归的简洁实现 | [3.3 线性回归的简洁实现](https://zh.d2l.ai/chapter_linear-networks/linear-regression-concise.html) |
-| 6 实现会踩的坑 | 两版都散在正文里，本节汇总 | 同上 |
-| 自测题 | 无 | 无 |
+| 讲义小节            | 纸质书（第二版）          | 电子版（第二版）                                                                                    |
+| --------------- | ----------------- | ------------------------------------------------------------------------------------------- |
+| 1 模型：从假设到表达式    | 3.1 线性回归的基本要素（模型） | [3.1 线性回归](https://zh.d2l.ai/chapter_linear-networks/linear-regression.html) 的"线性回归的基本元素"   |
+| 2 损失函数：为什么是平方误差 | 3.1 的"损失函数"       | 3.1 的"正态分布与平方损失"                                                                            |
+| 3 优化：小批量随机梯度下降  | 3.1 的"优化算法"       | 3.1 的"解析解"与"小批量随机梯度下降"                                                                      |
+| 4 从零实现          | 3.2 线性回归的从零开始实现   | [3.2 线性回归的从零开始实现](https://zh.d2l.ai/chapter_linear-networks/linear-regression-scratch.html) |
+| 5 简洁实现          | 3.3 线性回归的简洁实现     | [3.3 线性回归的简洁实现](https://zh.d2l.ai/chapter_linear-networks/linear-regression-concise.html)   |
+| 6 实现会踩的坑        | 两版都散在正文里，本节汇总     | 同上                                                                                          |
+| 自测题             | 无                 | 无                                                                                           |
 
 3.1–3.3 都有代码，是 PyTorch；3.1 里含"解析解"一节。
 
@@ -264,7 +264,8 @@ $N(\text{mean}_i,\text{std}_i)$ 抽。这种形式**不能再传 `size`**（传�
 g = torch.Generator().manual_seed(0)
 X = torch.randn(3, 2, generator=g)
 eps = torch.normal(0.0, 0.01, size=(3, 2), generator=g)
-形式。$\mathbf{X}\in\mathbb{R}^{n\times d}$（￼𝑛￼ 个样本、￼𝑑￼ 个特征）：```
+形式。$\mathbf{X}\in\mathbb{R}^{n\times d}$（￼𝑛￼ 个样本、￼𝑑￼ 个特征）：
+```
 
 `generator=g` 是关键字参数，两个函数都收。**不要在函数里调 `torch.manual_seed`**——
 那会改全局状态，影响调用者；传自己的 `Generator` 才不会互相干扰。

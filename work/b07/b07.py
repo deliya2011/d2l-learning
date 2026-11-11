@@ -18,4 +18,32 @@ def cross_entropy(logits: torch.Tensor, y: torch.Tensor) -> torch.Tensor:
 
 
 def accuracy(logits: torch.Tensor, y: torch.Tensor) -> float:
-    logits.argmax(dim=1)
+    pred = logits.argmax(dim=1)
+    return (pred == y).float().mean().item()
+
+
+def evaluate_accuracy(net, loader) -> float:
+    acc = 0
+    tot = 0
+    with torch.no_grad():
+        for X, y in loader:
+            X = X.reshape(X.shape[0], -1)
+            pred = net(X).argmax(dim=1)
+            acc += (pred == y).sum().item()
+            tot += y.numel()
+    return acc / tot
+
+
+def sgd(params: list, lr: float, batch_size: int) -> None:
+    with torch.no_grad():
+        for p in params:
+            p -= lr * p.grad / batch_size
+            p.grad.zero_()
+
+
+def make_net(num_inputs: int = 784, num_outputs: int = 10, seed: int = 0):
+    g = torch.Generator().manual_seed(seed)
+    W = torch.normal(
+        0.0, 0.01, size=(num_inputs, num_outputs), generator=g, requires_grad=True
+    )
+    b = torch.normal(0.0, 0.01, size=(num_outputs,), generator=g, requries_grad=True)

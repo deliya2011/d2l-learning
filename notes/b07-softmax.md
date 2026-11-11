@@ -331,7 +331,7 @@ $$\operatorname{logsumexp}(\mathbf{o}) = m + \log \sum_k \exp(o_k - m),\qquad m 
 截断把概率从 `9.36e-14` 抬到 `1e-12`，损失跟着从 30 掉到 27.63，差 2.37。
 它让程序不崩，但算出来的不是交叉熵。
 
-**正确做法是绕开这一步**：不计算 softmax，直接算 log 概率
+**正确做法是绕开这一步**：不计算 softmax，直接算 log 概率 
 
 $$\log \hat y_j = o_j - \operatorname{logsumexp}(\mathbf{o}) .$$
 
@@ -391,7 +391,7 @@ from torch.utils.data import DataLoader
 from torchvision import datasets, transforms
 ```
 
-与第 5 节一样，只是这回 `nn` 要用上。
+与第 5 节一样，只是这回 `nn` 要用上。net = lambda x: x @ w + b 
 
 ### 6.1 与 B06 的对照
 
@@ -526,20 +526,20 @@ ret[y, ya] += 1        # y 是真实类别，ya 是预测类别，都是整批�
 
 这一章用到的接口，按第一次出现的位置列。
 
-| 命令 | 作用 | 讲义哪一节 |
-|---|---|---|
-| `datasets.FashionMNIST(root, train, download, transform)` | 读 Fashion-MNIST | 4 |
-| `transforms.ToTensor()` | PIL 图像转张量，像素缩到 0–1 | 4 |
-| `Tensor.reshape(n, -1)` | 拉平图像 | 4 |
-| `torch.softmax(x, dim=1)` | 按类别维做 softmax（内部做平移防上溢） | 5.2 |
-| `torch.log_softmax(x, dim=1)` | softmax 后取 log，精度更好 | 5.2 |
-| `Tensor.argmax(dim=1)` | 取每行最大值的下标 | 5.3 |
-| `Tensor.float()` | 布尔张量转浮点，便于求平均 | 5.3 |
-| `Tensor.mean()` | 求平均 | 5.3 |
-| `torch.no_grad()` | 这一段不建图 | 5.5 |
-| `nn.Linear(784, 10)` | 线性层 | 6.1 |
-| `nn.CrossEntropyLoss()` | 交叉熵损失，**接收 logits** | 6.2 |
-| `torch.zeros((10, 10))` | 混淆矩阵的容器 | 7 |
+| 命令                                                        | 作用                      | 讲义哪一节 |
+| --------------------------------------------------------- | ----------------------- | ----- |
+| `datasets.FashionMNIST(root, train, download, transform)` | 读 Fashion-MNIST         | 4     |
+| `transforms.ToTensor()`                                   | PIL 图像转张量，像素缩到 0–1      | 4     |
+| `Tensor.reshape(n, -1)`                                   | 拉平图像                    | 4     |
+| `torch.softmax(x, dim=1)`                                 | 按类别维做 softmax（内部做平移防上溢） | 5.2   |
+| `torch.log_softmax(x, dim=1)`                             | softmax 后取 log，精度更好     | 5.2   |
+| `Tensor.argmax(dim=1)`                                    | 取每行最大值的下标               | 5.3   |
+| `Tensor.float()`                                          | 布尔张量转浮点，便于求平均           | 5.3   |
+| `Tensor.mean()`                                           | 求平均                     | 5.3   |
+| `torch.no_grad()`                                         | 这一段不建图                  | 5.5   |
+| `nn.Linear(784, 10)`                                      | 线性层                     | 6.1   |
+| `nn.CrossEntropyLoss()`                                   | 交叉熵损失，**接收 logits**     | 6.2   |
+| `torch.zeros((10, 10))`                                   | 混淆矩阵的容器                 | 7     |
 
 ## 自测题
 
