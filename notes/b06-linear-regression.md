@@ -645,28 +645,28 @@ for epoch in range(num_epochs):
 
 这一章用到的接口，按第一次出现的位置列。
 
-| 命令 | 作用 | 讲义哪一节 |
-|---|---|---|
-| `torch.normal(mean, std, size=...)` | 标量形式的正态采样 | 4.1.1 |
-| `torch.normal(mean_tensor, std_tensor)` | 逐元素正态采样，不能传 `size` | 4.1.1 |
-| `torch.randn(size)` | 标准正态采样 | 4.1.1 |
-| `torch.Generator().manual_seed(seed)` | 建独立的随机数发生器并设种子 | 4.1.1 |
-| `torch.zeros(size)` | 全零张量 | 4.3 |
-| `torch.arange(n)` | 生成下标序列 | 4.2 |
-| `torch.randperm(n)` | 随机排列 0 到 n-1 | 4.2 |
-| `Tensor.requires_grad_(True)` | 打开求导记录 | 4.3 |
-| `X[idx]` | 按整数张量取行 | 4.2 |
-| `l.sum().backward()` | 非标量输出先求和再反传 | 4.7 |
-| `torch.no_grad()` | 这一段不建图 | 4.6 |
-| `Tensor.grad.zero_()` | 就地清零某个参数的梯度 | 4.7 |
-| `Tensor.item()` | 单元素张量取成 Python 数值 | 4.8 |
-| `nn.Linear(in_features, out_features)` | 线性层 | 5.1 |
-| `nn.MSELoss()` | 均方误差损失 | 5.1 |
-| `torch.optim.SGD(params, lr=...)` | 随机梯度下降优化器 | 5.1 |
-| `optimizer.zero_grad()` | 清零优化器里全部参数的梯度 | 5.3 |
-| `optimizer.step()` | 按当前梯度更新参数 | 5.3 |
-| `TensorDataset(a, b)` | 把两个张量按第一维对齐包成数据集 | 5.2 |
-| `DataLoader(dataset, batch_size, shuffle)` | 分批迭代 | 5.2 |
+| 命令                                         | 作用                 | 讲义哪一节 |
+| ------------------------------------------ | ------------------ | ----- |
+| `torch.normal(mean, std, size=...)`        | 标量形式的正态采样          | 4.1.1 |
+| `torch.normal(mean_tensor, std_tensor)`    | 逐元素正态采样，不能传 `size` | 4.1.1 |
+| `torch.randn(size)`                        | 标准正态采样             | 4.1.1 |
+| `torch.Generator().manual_seed(seed)`      | 建独立的随机数发生器并设种子     | 4.1.1 |
+| `torch.zeros(size)`                        | 全零张量               | 4.3   |
+| `torch.arange(n)`                          | 生成下标序列             | 4.2   |
+| `torch.randperm(n)`                        | 随机排列 0 到 n-1       | 4.2   |
+| `Tensor.requires_grad_(True)`              | 打开求导记录             | 4.3   |
+| `X[idx]`                                   | 按整数张量取行            | 4.2   |
+| `l.sum().backward()`                       | 非标量输出先求和再反传        | 4.7   |
+| `torch.no_grad()`                          | 这一段不建图             | 4.6   |
+| `Tensor.grad.zero_()`                      | 就地清零某个参数的梯度        | 4.7   |
+| `Tensor.item()`                            | 单元素张量取成 Python 数值  | 4.8   |
+| `nn.Linear(in_features, out_features)`     | 线性层                | 5.1   |
+| `nn.MSELoss()`                             | 均方误差损失             | 5.1   |
+| `torch.optim.SGD(params, lr=...)`          | 随机梯度下降优化器          | 5.1   |
+| `optimizer.zero_grad()`                    | 清零优化器里全部参数的梯度      | 5.3   |
+| `optimizer.step()`                         | 按当前梯度更新参数          | 5.3   |
+| `TensorDataset(a, b)`                      | 把两个张量按第一维对齐包成数据集   | 5.2   |
+| `DataLoader(dataset, batch_size, shuffle)` | 分批迭代               | 5.2   |
 
 ## 自测题
 
