@@ -46,9 +46,11 @@ CAICP&NOAI/
   learning/        与 d2l 的差距清单（CAICP 与 NOAI 各一份）
   daily/
     2026-11-14/
-      round1.md    第一轮试卷
-      round2.md    第二轮试卷
-      answers.md   答案与评分
+      round1.md         第一轮试卷
+      round2.md         第二轮试卷
+      topics-round1.md  第一轮知识点清单（先复习再做）
+      topics-round2.md  第二轮知识点清单
+      answers.md        答案与评分
 ```
 
 ## 评分
