@@ -4,7 +4,7 @@
 这部分需要单独补，不能指望学完 d2l 自然就会。
 
 - `gaps.md`：逐条对照结果（完全没讲 / 只提过 / 讲了但口径不同）
-- 每条标了大纲编号（见 `caicp/outline-j.md`、`caicp/outline-s.md`）
+- 每条标了大纲编号（见 `CAICP&NOAI/outline-j.md`、`CAICP&NOAI/outline-s.md`）
 
 判断标准：
 - **没讲**：d2l 讲义与题目里找不到对应内容
