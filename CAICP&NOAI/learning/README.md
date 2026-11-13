@@ -3,8 +3,10 @@
 用途：出卷与补课时对照。**d2l 是主线**，但 CAICP 大纲有一部分内容 d2l 不讲或只带一句，
 这部分需要单独补，不能指望学完 d2l 自然就会。
 
-- `gaps.md`：逐条对照结果（完全没讲 / 只提过 / 讲了但口径不同）
-- 每条标了大纲编号（见 `CAICP&NOAI/outline-j.md`、`CAICP&NOAI/outline-s.md`）
+- `gaps.md`：CAICP 逐条对照结果（完全没讲 / 只提过 / 讲了但口径不同）
+- `gaps-noai.md`：NOAI 逐条对照结果
+- `notes/`：按难度排列的 10 份补课讲义（索引见 `notes/README.md`），覆盖三份考纲的缺口
+- 每条标了大纲编号（见 `CAICP&NOAI/outline-j.md`、`outline-s.md`、`outline-noai.md`）
 
 判断标准：
 - **没讲**：d2l 讲义与题目里找不到对应内容
