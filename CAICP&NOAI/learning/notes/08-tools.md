@@ -6,6 +6,8 @@ d2l 用 torch，但考纲（尤其 NOAI C 区）要 NumPy/Pandas/Matplotlib/skle
 
 ## 1. NumPy
 
+> 前置：d2l **B02 数据操作**（张量形状、索引、广播；NumPy 与它一一对应）。
+
 ```python
 import numpy as np
 
@@ -24,6 +26,8 @@ a.sum(axis=0), a.mean(), a.std()     # 统计（axis=0 按列）
 `axis=1` 沿列方向压，结果长度等于行数。记不住就写 `a.sum(axis=0).shape` 试一次。
 
 ## 2. Pandas
+
+> 前置：d2l **B02 数据预处理**（`read_csv`、`fillna`、`get_dummies`）。
 
 ```python
 import pandas as pd
@@ -72,6 +76,8 @@ plt.show()
 是面向对象接口，`ax.plot`、`ax.set_xlabel`，多子图时更清晰。
 
 ## 4. scikit-learn
+
+> 前置：d2l **B06 线性回归** 与 **B07 softmax 回归**（`fit`/`predict` 的语义）。
 
 ```python
 from sklearn.model_selection import train_test_split

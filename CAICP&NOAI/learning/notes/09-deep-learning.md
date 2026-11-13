@@ -7,6 +7,8 @@ GAN、CV 任务、语音、LLM 部署。
 
 ## 1. 优化器：SGD → Adam/AdamW
 
+> 前置：d2l **B06 线性回归**（SGD 与参数更新）与 **B25 优化算法**（若已学）。
+
 - **SGD**：$\theta\leftarrow\theta-\eta\nabla L$
 - **动量**：累积历史梯度，抑制震荡
 - **Adam**：一阶矩（均值）与二阶矩（平方均值）的指数移动平均，自适应学习率
@@ -28,6 +30,8 @@ AdamW 则把衰减单独作用在参数上：$\theta\leftarrow\theta-\eta\lambda
 
 ## 2. 权重初始化：Xavier 与 He
 
+> 前置：d2l **B11 反向传播与数值稳定性**（初始化与梯度消失）。
+
 - **Xavier**：方差按输入/输出维度折中，适合 tanh/sigmoid
 - **He**：方差按输入维度放大 2 倍，适合 ReLU
 
@@ -41,6 +45,8 @@ AdamW 则把衰减单独作用在参数上：$\theta\leftarrow\theta-\eta\lambda
 He 多一个因子 2，因为 ReLU 把一半激活置零，方差要补偿。
 
 ## 3. 批量归一化（BN）
+
+> 前置：d2l **B18 BN/ResNet**（若已学；未学可先看公式）。
 
 对每个小批量的同一通道做"减均值、除标准差"，再乘可学习的 $\gamma$、加 $\beta$：
 
@@ -59,6 +65,8 @@ $\mu_{\mathcal B}$、$\sigma_{\mathcal B}^2$ 是当前批量的均值与方差�
 好处：省显存、提速；风险：数值下溢/上溢。
 
 ## 5. CNN、RNN、GAN
+
+> 前置：d2l **B15 卷积**与 **B19 RNN**（CNN/RNN 的结构）。
 
 - **CNN**：卷积层提取局部特征，池化降维，全连接分类
 - **RNN**：按时间步处理序列，隐藏状态传递历史；LSTM/GRU 用门控缓解长程依赖
