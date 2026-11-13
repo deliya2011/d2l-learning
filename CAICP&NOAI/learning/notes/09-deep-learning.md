@@ -12,7 +12,19 @@ GAN、CV 任务、语音、LLM 部署。
 - **Adam**：一阶矩（均值）与二阶矩（平方均值）的指数移动平均，自适应学习率
 - **AdamW**：Adam + 解耦的权重衰减（weight decay 不混进梯度）
 
-与普通 SGD 的差异：Adam 每个参数有自己的步长，初期收敛快；可能泛化略差，需要调参。
+**Adam 的更新式**（记这一组就够）：
+
+$$m_t=\beta_1m_{t-1}+(1-\beta_1)g_t,\qquad v_t=\beta_2v_{t-1}+(1-\beta_2)g_t^2$$
+
+$$\hat m_t=\frac{m_t}{1-\beta_1^t},\qquad \hat v_t=\frac{v_t}{1-\beta_2^t},\qquad
+\theta_t=\theta_{t-1}-\eta\frac{\hat m_t}{\sqrt{\hat v_t}+\epsilon}$$
+
+$m$ 是一阶矩（梯度的均值），$v$ 是二阶矩（梯度平方的均值）；分母 $\sqrt{v}$ 让每个参数
+的步长按自己的梯度尺度缩放。$\beta_1=0.9$、$\beta_2=0.999$ 是默认值，$\epsilon$ 防除零。
+
+**AdamW 的改动**：Adam 把 weight decay 加进梯度（$g_t\leftarrow g_t+\lambda\theta$），
+AdamW 则把衰减单独作用在参数上：$\theta\leftarrow\theta-\eta\lambda\theta-\eta\hat m/\sqrt{\hat v}$。
+这样衰减不受自适应学习率影响，正则效果更可控。
 
 ## 2. 权重初始化：Xavier 与 He
 
@@ -21,9 +33,24 @@ GAN、CV 任务、语音、LLM 部署。
 
 目的：让各层输出的方差保持稳定，避免信号逐层消失或爆炸。
 
+**方差怎么定**：设输入维度 $n_{in}$、输出维度 $n_{out}$，希望输出方差与输入相同。
+
+- Xavier（Glorot）：$\mathrm{Var}(w)=\dfrac{2}{n_{in}+n_{out}}$
+- He（Kaiming）：$\mathrm{Var}(w)=\dfrac{2}{n_{in}}$
+
+He 多一个因子 2，因为 ReLU 把一半激活置零，方差要补偿。
+
 ## 3. 批量归一化（BN）
 
-对每个小批量的同一通道做"减均值、除标准差"，再乘可学习的 $\gamma$、加 $\beta$。
+对每个小批量的同一通道做"减均值、除标准差"，再乘可学习的 $\gamma$、加 $\beta$：
+
+$$\hat x=\frac{x-\mu_{\mathcal B}}{\sqrt{\sigma_{\mathcal B}^2+\epsilon}},\qquad
+y=\gamma\hat x+\beta$$
+
+$\mu_{\mathcal B}$、$\sigma_{\mathcal B}^2$ 是当前批量的均值与方差（训练时），
+推理时改用训练过程中累积的滑动平均。$\gamma$、$\beta$ 是可学习参数，让网络自己决定
+要不要"还原"归一化。
+
 作用：稳定训练、允许更大学习率、有轻微正则化效果。注意训练与推理的统计量不同。
 
 ## 4. 混合精度训练
@@ -35,7 +62,11 @@ GAN、CV 任务、语音、LLM 部署。
 
 - **CNN**：卷积层提取局部特征，池化降维，全连接分类
 - **RNN**：按时间步处理序列，隐藏状态传递历史；LSTM/GRU 用门控缓解长程依赖
-- **GAN**：生成器造假样本、判别器辨真假，二者对抗训练
+- **GAN**：生成器造假样本、判别器辨真假，二者对抗训练。目标是极小极大：
+
+$$\min_G\max_D\;\mathbb E_{x\sim p_{data}}[\log D(x)]+\mathbb E_{z}[\log(1-D(G(z)))]$$
+
+训练时交替更新 $D$ 与 $G$；理想平衡点是 $G$ 生成的分布等于真实分布、$D$ 输出恒为 0.5。
 
 ## 6. 计算机视觉任务与模型
 
@@ -45,6 +76,12 @@ GAN、CV 任务、语音、LLM 部署。
 | 语义分割 | 每个像素的类别 | U-Net |
 | 目标检测 | 框 + 类别 | YOLO、SSD、DETR |
 | 多模态 | 图文匹配/生成 | CLIP、扩散模型 |
+
+**卷积输出尺寸**：输入 $H\times W$、核 $k\times k$、填充 $p$、步长 $s$，
+输出 $\lfloor(H+2p-k)/s\rfloor+1$。例：$28\times28$、$k=5$、$p=2$、$s=1$ → $28\times28$。
+
+**感受野**：一层层堆叠后，一个输出单元"看到"的输入区域。两个 $3\times3$ 卷积堆叠的感受野
+等于一个 $5\times5$，但参数更少（$2\times9<25$）。
 
 OpenCV 常用：读图 `cv2.imread`、缩放 `cv2.resize`、颜色空间 `cv2.cvtColor`、边缘 `cv2.Canny`。
 
@@ -60,6 +97,8 @@ OpenCV 常用：读图 `cv2.imread`、缩放 `cv2.resize`、颜色空间 `cv2.cv
 - 多模态：文本、图像、音频联合建模
 - 本地部署：下载开源权重（如 Qwen）、加载 tokenizer 与模型、生成
 - API 调用：用 HTTP 请求把 prompt 发给服务（如 OpenRouter），解析返回
+- **采样参数**：温度 $T$ 控制随机性（$T\to0$ 趋近贪心，$T$ 大更随机）；
+  top-p（核采样）只在累计概率达到 $p$ 的最小词集合里采样；top-k 只在概率最高的 k 个词里采样
 
 ## 9. 自测
 

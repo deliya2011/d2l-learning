@@ -17,8 +17,11 @@ a + 10, a * 2                        # 向量化运算
 a.sum(axis=0), a.mean(), a.std()     # 统计（axis=0 按列）
 ```
 
-广播：形状从右往左对齐，某维为 1 可扩展。`np.zeros`、`np.ones`、`np.arange`、`np.linspace`、
-`np.random.randn` 是常用创建函数。
+**广播规则**（与 torch 相同）：形状从右往左逐维比较，相等或其中一个为 1 才能运算；
+为 1 的那维会被"复制"扩展。例：`(3,1)` 与 `(1,4)` → `(3,4)`。
+
+**axis 的理解**：`axis=0` 是"沿着行方向压下去"，结果少一维、长度等于列数；
+`axis=1` 沿列方向压，结果长度等于行数。记不住就写 `a.sum(axis=0).shape` 试一次。
 
 ## 2. Pandas
 
@@ -38,6 +41,17 @@ df1.merge(df2, on="id", how="left")             # 连接
 
 Series 是一列，DataFrame 是二维表。
 
+**merge 的四种连接**：
+
+| how | 保留什么 |
+|---|---|
+| `inner` | 两表键的交集 |
+| `left` | 左表全部，右表匹配不上填 NaN |
+| `right` | 右表全部 |
+| `outer` | 两表键的并集 |
+
+**groupby 的本质**是"拆分—应用—合并"：按某列分组，对每组算统计量，再拼回表。
+
 ## 3. Matplotlib
 
 ```python
@@ -53,6 +67,9 @@ plt.show()
 ```
 
 要点：多序列要 `label` + `legend`；坐标轴范围 `plt.xlim/ylim`；刻度 `plt.xticks`。
+
+**两种接口**：`plt.*` 是"当前图"的快捷方式，适合快速画；`fig, ax = plt.subplots()`
+是面向对象接口，`ax.plot`、`ax.set_xlabel`，多子图时更清晰。
 
 ## 4. scikit-learn
 
@@ -70,6 +87,17 @@ model.score(X_test, y_test)          # 评分（回归 R²，分类准确率）
 
 常见模型：`LogisticRegression`、`KNeighborsClassifier`、`SVC`、`DecisionTreeClassifier`、
 `RandomForestClassifier`、`KMeans`、`PCA`。统一接口：`fit` / `predict` / `score`。
+
+**Pipeline** 把预处理与模型串起来，避免"训练集标准化用训练集统计量、测试集又用测试集统计量"
+这种泄漏：
+
+```python
+from sklearn.pipeline import make_pipeline
+from sklearn.preprocessing import StandardScaler
+
+pipe = make_pipeline(StandardScaler(), LogisticRegression())
+pipe.fit(X_train, y_train)      # 标准化只 fit 训练集，测试集用同一组参数
+```
 
 ## 5. jieba
 
