@@ -18,6 +18,7 @@ B06 与 B07 的模型都是"一层线性变换"。这一章加进隐藏层与激
 | 6 实现会踩的坑      | 散在两版正文里，本节汇总                   | 同上                                                                              |
 | 自测题           | 无                              | 无                                                                               |
 
+
 两版都有代码。这一章的模型沿用 B07 的 Fashion-MNIST 分类任务，
 只把中间的模型换掉，训练循环与评估方式不变——这正是上一章那套框架的复用。
 
@@ -74,6 +75,9 @@ $\mathbf{W}_o\in\mathbb{R}^{h\times q}$、$\mathbf{b}_o\in\mathbb{R}^{1\times q}
 $$\mathbf{O} = (\mathbf{X}\mathbf{W}_h + \mathbf{b}_h)\mathbf{W}_o + \mathbf{b}_o
 = \mathbf{X}\underbrace{\mathbf{W}_h\mathbf{W}_o}_{\text{新的权重}} + \underbrace{\mathbf{b}_h\mathbf{W}_o + \mathbf{b}_o}_{\text{新的偏置}} .$$
 
+这个式子在证明「两层线性 = 一层线性」：把隐藏层的输出代进输出层，两个权重矩阵乘成一个新矩阵、
+两个偏置合成一个新偏置，形式上还是一层。所以不加非线性的话，隐藏层白加。
+
 结果仍然是一个线性变换：输出等于输入乘某个矩阵加某个向量。
 **隐藏层白加了**——它与单层网络完全等价。再加更多层也一样，因为矩阵乘积还是矩阵。
 
@@ -85,6 +89,9 @@ $$\mathbf{O} = (\mathbf{X}\mathbf{W}_h + \mathbf{b}_h)\mathbf{W}_o + \mathbf{b}_
 
 $$\mathbf{H} = \sigma(\mathbf{X}\mathbf{W}_h + \mathbf{b}_h) .$$
 
+这个式子在写隐藏层的两步：先做线性变换 $\mathbf{X}\mathbf{W}_h+\mathbf{b}_h$，
+再对结果的**每个元素**套同一个非线性函数 $\sigma$。第二步是打破线性的关键。
+
 这时联立不再成立（$\sigma$ 不能吸收进矩阵乘法），模型的表达能力就超出了线性模型。
 
 **"逐元素"很重要**：$\sigma$ 独立作用在每个元素上，不混合不同样本、不同单元的信息。
@@ -95,6 +102,8 @@ $$\mathbf{H} = \sigma(\mathbf{X}\mathbf{W}_h + \mathbf{b}_h) .$$
 ### 2.1 ReLU
 
 $$\operatorname{ReLU}(x) = \max(x, 0) .$$
+
+这个式子在定义 ReLU：负数一律变成 0，正数原样保留。就一次比较，没有指数运算。
 
 导数分段：$x>0$ 时为 1，$x<0$ 时为 0，$x=0$ 处不可导（实际实现里取 0 或 1 都行）。
 
@@ -114,9 +123,14 @@ $$\operatorname{ReLU}(x) = \max(x, 0) .$$
 
 $$\operatorname{sigmoid}(x) = \frac{1}{1+\exp(-x)} .$$
 
+这个式子在把任意实数压进 $(0,1)$：$x$ 很大时趋近 1，很小时趋近 0，中间是一段平滑的 S 形。
+
 把任意实数压到 $(0,1)$，形状像 S。导数有一个漂亮的形式：
 
 $$\operatorname{sigmoid}'(x) = \operatorname{sigmoid}(x)\left(1-\operatorname{sigmoid}(x)\right) .$$
+
+这个式子在说 sigmoid 的导数**可以用它自己的输出算出来**，不必重新求导。
+由于 $\sigma\in(0,1)$，$\sigma(1-\sigma)$ 最大只有 $0.25$（在 $\sigma=0.5$ 处）。
 
 **问题**：导数最大只有 0.25。多层反向传播时这些小数连乘，梯度会迅速趋近 0，
 这就是**梯度消失**。所以现在很少把它用作隐藏层的激活函数。
@@ -127,9 +141,14 @@ $$\operatorname{sigmoid}'(x) = \operatorname{sigmoid}(x)\left(1-\operatorname{si
 
 $$\tanh(x) = \frac{1-\exp(-2x)}{1+\exp(-2x)} .$$
 
+这个式子在把任意实数压进 $(-1,1)$，形状与 sigmoid 相同，但关于原点对称（零中心）。
+
 把任意实数压到 $(-1,1)$，形状与 sigmoid 相同但**关于原点对称**。导数：
 
 $$\tanh'(x) = 1-\tanh^2(x) .$$
+
+这个式子在说 tanh 的导数由它的输出决定：输出接近 $\pm1$（饱和）时导数接近 0，
+输出在 0 附近时导数最大为 1。
 
 导数最大为 1（在 $x=0$ 处），比 sigmoid 好一点，但两端仍然会饱和到 0，
 所以深层网络里同样有梯度消失问题。
@@ -144,6 +163,84 @@ $$\tanh'(x) = 1-\tanh^2(x) .$$
 
 一句话：**隐藏层用 ReLU，除非有理由不用**。B09 之后会看到 sigmoid 与 tanh
 在循环网络里还活着（那里需要把值压在界内）。
+
+### 2.5 导数：从激活函数到反向传播
+
+这一节把"导数"这件事讲透。B04 给过定义，这里只关心**它在 MLP 里怎么用**。
+
+**导数的含义**：$f'(x)$ 是"$x$ 变一点点，$f$ 变多少倍"。链式法则说，复合函数的导数等于
+各层导数的**乘积**——这正是反向传播"连乘"的来源。
+
+#### 2.5.1 三个激活函数的导数
+
+**ReLU**：
+
+$$\operatorname{ReLU}'(x)=\begin{cases}1,&x>0\\0,&x<0\end{cases}$$
+
+$x=0$ 处左右导数不同，严格说不可导；实现里取 0（或 1）都不影响训练。
+特点：导数只有 0 和 1 两种取值，不会因连乘而衰减。
+
+**sigmoid**：从定义出发
+
+$$\sigma(x)=\frac{1}{1+e^{-x}}=(1+e^{-x})^{-1}$$
+
+$$\sigma'(x)=-(1+e^{-x})^{-2}\cdot(-e^{-x})
+=\frac{e^{-x}}{(1+e^{-x})^2}=\sigma(x)\cdot\frac{e^{-x}}{1+e^{-x}}
+=\sigma(x)\bigl(1-\sigma(x)\bigr)$$
+
+最后一步用了 $\dfrac{e^{-x}}{1+e^{-x}}=1-\dfrac{1}{1+e^{-x}}=1-\sigma(x)$。
+所以 $\sigma'$ 最大值是 $0.25$（$\sigma=0.5$ 时）。
+
+**tanh**：用 $\tanh(x)=2\sigma(2x)-1$ 与链式法则：
+
+$$\tanh'(x)=2\cdot2\sigma(2x)\bigl(1-\sigma(2x)\bigr)
+=4\sigma(2x)\bigl(1-\sigma(2x)\bigr)=1-\tanh^2(x)$$
+
+最大值是 1（$x=0$ 处），但 $|x|$ 一大就饱和到 0。
+
+#### 2.5.2 反向传播手算一遍
+
+取一个样本、两层网络（B04 的链式法则在这里落地）：
+
+$$\mathbf{z}_1=\mathbf{W}_1\mathbf{x}+\mathbf{b}_1,\quad
+\mathbf{h}=\operatorname{ReLU}(\mathbf{z}_1),\quad
+z_2=\mathbf{W}_2\mathbf{h}+b_2,\quad
+L=\tfrac12(z_2-y)^2$$
+
+**输出层的误差**（对 $z_2$ 求导）：
+
+$$\delta_2=\frac{\partial L}{\partial z_2}=z_2-y$$
+
+**输出层参数的梯度**（$z_2$ 对 $\mathbf{W}_2$、$b_2$ 的偏导就是 $\mathbf{h}$、1）：
+
+$$\frac{\partial L}{\partial \mathbf{W}_2}=\delta_2\mathbf{h}^\top,\qquad
+\frac{\partial L}{\partial b_2}=\delta_2$$
+
+**误差传回隐藏层**：先用 $\mathbf{W}_2^\top$ 把误差"按权重分回去"（链式法则），
+再乘上 ReLU 的局部导数（逐元素）：
+
+$$\delta_1=\left(\mathbf{W}_2^\top\delta_2\right)\odot\operatorname{ReLU}'(\mathbf{z}_1)$$
+
+**隐藏层参数的梯度**：
+
+$$\frac{\partial L}{\partial \mathbf{W}_1}=\delta_1\mathbf{x}^\top,\qquad
+\frac{\partial L}{\partial \mathbf{b}_1}=\delta_1$$
+
+四个式子合起来就是"反向传播"：**从损失出发，每往回一层就乘上那一层的局部导数**。
+不难，只是要把形状对上（$\delta_1$ 与 $\mathbf{z}_1$ 同形）。
+
+#### 2.5.3 梯度消失：连乘的代价
+
+sigmoid 每层导数不超过 $0.25$。10 层连乘：
+
+$$0.25^{10}\approx 9.5\times10^{-7}$$
+
+误差传到第 1 层时已经小到可以忽略——前面的层几乎学不动。tanh 好一点（最大 1），
+但饱和时也接近 0。ReLU 的导数是 0 或 1，连乘不会衰减，所以深层网络默认用 ReLU。
+
+这也是 B09 之后要讲"初始化、归一化、残差连接"的原因：它们都在解决"信号传不回去"。
+
+**一句话**：反向传播不是新规则，只是把链式法则按"从后往前"组织，避免重复计算。
 
 ## 3 多层感知机
 
