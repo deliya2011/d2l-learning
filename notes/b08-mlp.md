@@ -132,6 +132,8 @@ $$\operatorname{sigmoid}'(x) = \operatorname{sigmoid}(x)\left(1-\operatorname{si
 这个式子在说 sigmoid 的导数**可以用它自己的输出算出来**，不必重新求导。
 由于 $\sigma\in(0,1)$，$\sigma(1-\sigma)$ 最大只有 $0.25$（在 $\sigma=0.5$ 处）。
 
+![横轴是 x，纵轴是函数值。蓝线是 sigmoid，从 0 平滑升到 1；红色虚线是它的导数，在 x=0 处取最大值 0.25，向两侧迅速衰减到 0](figs/b08-sigmoid.png)
+
 **问题**：导数最大只有 0.25。多层反向传播时这些小数连乘，梯度会迅速趋近 0，
 这就是**梯度消失**。所以现在很少把它用作隐藏层的激活函数。
 
