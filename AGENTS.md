@@ -58,6 +58,10 @@
   `ofalias:~/d2l-learning~`（与本仓库同构）跑断言。批改时以它的输出为准；代码也从远端读
   （`ssh ofalias 'sed -n ...'`），本机副本只用于阅读与编辑。
   远端是 NixOS，torch 需要 `libstdc++`，recipe 已用 `nix build` 注入 `LD_LIBRARY_PATH`。
+- **两边用 git 同步**：本机改完 → `git add -A && git commit && git push`；
+  远端 `ssh ofalias 'cd ~/d2l-learning~ && git pull --ff-only'`。
+  **改完代码先同步再跑 `check-remote`**，否则远端跑的是旧代码（发生过一次：T4 改了本机没同步，
+  远端仍报旧错误）。
 - **本机没有独立显卡，torch 是 CPU 版**（`torch.cuda.is_available()` 恒为 False）。
   讲义与题目里的实验按 CPU 的算力设计；必须用显卡的例子要标明"没有显卡时跳过"。
 
