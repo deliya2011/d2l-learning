@@ -11,3 +11,9 @@ output/
 
 # 文件管理器（Dolphin 等）留下的目录标记文件
 .directory
+
+# work 下的学习过程产物不入库，只保留 .py
+work/**/*.csv
+work/**/*.pt
+work/**/*.pth
+work/**/*.npy
