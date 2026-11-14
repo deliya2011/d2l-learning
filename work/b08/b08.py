@@ -144,7 +144,7 @@ def train_concise(
             optimizer.zero_grad()
             l.backward()
             optimizer.step()
-            tot += l.item()
+            tot += l.item() * y.numel()
             n_samples += y.numel()
         train_loss.append(tot / n_samples)
         train_acc.append(evaluate_accuracy(net, train_iter))
