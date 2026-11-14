@@ -45,14 +45,19 @@
 
 ## 仓库与运行环境
 
-**所有东西都在本机这个仓库目录里**：讲义、题目、学习者的代码、验收脚本、解释器、依赖。
-没有远端机器，也没有同步步骤。
+**材料在本机这个仓库目录里**：讲义、题目、验收脚本、解释器、依赖。
+学习者的代码与断言的**权威副本在 ofalias 的镜像仓库**（见下面的 `check-remote`），
+本机副本只用于阅读与编辑，两边同构。
 
 - 解释器和依赖都在仓库内的 `.venv`：Python 3.14（Arch 的 `python` 包）、torch 2.14.1（**CPU 版**）、
   torchvision、matplotlib、numpy、pandas、tqdm、requests。清单在 `requirements.txt`，重建用 `just setup`。
   **跑任何 Python 都走 `.venv`**：`just run <脚本>`、`just check <单元>`，
   或直接 `.venv/bin/python <脚本>`。
 - `just` 与 `git` 用 pacman 装。`justfile` 的 shell 是 `bash -uc`，recipe 按 POSIX shell 写。
+- **断言的权威运行在 ofalias**（2026-11-15 起）：`just check-remote <单元>` 会 ssh 到
+  `ofalias:~/d2l-learning~`（与本仓库同构）跑断言。批改时以它的输出为准；代码也从远端读
+  （`ssh ofalias 'sed -n ...'`），本机副本只用于阅读与编辑。
+  远端是 NixOS，torch 需要 `libstdc++`，recipe 已用 `nix build` 注入 `LD_LIBRARY_PATH`。
 - **本机没有独立显卡，torch 是 CPU 版**（`torch.cuda.is_available()` 恒为 False）。
   讲义与题目里的实验按 CPU 的算力设计；必须用显卡的例子要标明"没有显卡时跳过"。
 
