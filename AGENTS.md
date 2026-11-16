@@ -62,6 +62,8 @@
   远端 `ssh ofalias 'cd ~/d2l-learning~ && git pull --ff-only'`。
   **改完代码先同步再跑 `check-remote`**，否则远端跑的是旧代码（发生过一次：T4 改了本机没同步，
   远端仍报旧错误）。
+  **默认推 GitHub；只有学习者明确说"不推"时，才只同步远端（rsync）不推。**
+  2026-11-16 澄清过：他说的"不必推 GitHub"只针对那一次。
 - **本机没有独立显卡，torch 是 CPU 版**（`torch.cuda.is_available()` 恒为 False）。
   讲义与题目里的实验按 CPU 的算力设计；必须用显卡的例子要标明"没有显卡时跳过"。
 
