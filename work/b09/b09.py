@@ -1,3 +1,27 @@
+"""
+import matplotlib.pyplot as plt
+import torch
+
+w = torch.zeros(3, 1, requires_grad=True)
+b = torch.zeros(1, requires_grad=True)
+train_curve, test_curve = [], []
+
+for epoch in range(100):
+    for X, y in train_iter:
+        pred = X @ w + b
+        loss = ((pred - y) ** 2).sum()
+        loss.backward()
+        with torch.no_grad():
+            w -= lr * w.grad
+            b -= lr * b.grad
+            #没有清零，梯度会一直累积，导致训练发散，应添加w.grad=None和b.grad=None
+    train_curve.append(loss.item())#此行错误，训练时返回和没有问题，但是此处应该返回平均(loss/X.shape[0]).item()
+    test_curve.append(((X_test @ w + b - y_test) ** 2).sum())
+
+plt.plot(train_curve, test_curve) #此行错误，把训练误差当成了横轴，测试误差当成了纵轴，画出来的是两条误差的关系图，以及并没有savefig
+plt.show()
+"""
+
 import torch
 import matplotlib
 import matplotlib.pyplot as plt
@@ -16,9 +40,8 @@ def poly_features(x: torch.Tensor, k: int) -> torch.Tensor:
     return torch.cat([x**i for i in range(1, k + 1)], dim=1)
 
 
-def squared_loss(y_hat: torch.Tensor, y: torch.Tensor) -> torch.Tensor:
-    y = y.reshape(y_hat.shape)
-    return (y_hat - y) ** 2 / 2
+def squared_loss(pred: torch.Tensor, y: torch.Tensor) -> torch.Tensor:
+    return ((pred - y) ** 2).sum()
 
 
 def sgd(params: list, lr: float, batch_size: int) -> None:
@@ -61,3 +84,35 @@ def train_poly(
         train_loss.append(mean_loss(X_train @ w + b, y_train))
         test_loss.append(mean_loss(X_test @ w + b, y_test))
     return {"train_loss": train_loss, "test_loss": test_loss}
+
+
+def plot_errors(train_loss: list, test_loss: list, path: str) -> None:
+    plt.figure(figsize=(7, 4))
+    epochs = range(1, len(train_loss) + 1)
+    plt.semilogy(epochs, train_loss, label="training error")
+    plt.semilogy(epochs, test_loss, label="generalization error")
+    plt.xlabel("epoch")
+    plt.ylabel("mean squared error(log scale)")
+    plt.legend()
+    plt.savefig(path, dpi=120)
+
+
+def k_fold_indices(n: int, k: int, seed: int = 0) -> list:
+    g = torch.Generator().manual_seed(seed)
+    order = torch.randperm(n, generator=g).tolist()
+    base = n // k
+    extra = n % k
+    parts, start = [], 0
+    for i in range(k):
+        size = base + (1 if i < extra else 0)
+        parts.append(sorted(order[start : start + size]))
+        start += size
+    return parts
+
+
+def diagnose(train_loss: list, test_loss: list) -> str:
+    if train_loss[-1] > 0.5:
+        return "underfitting"
+    if test_loss[-1] > train_loss[-1] * 10:
+        return "overfitting"
+    return "good"
