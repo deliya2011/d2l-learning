@@ -15,6 +15,7 @@ import torch
 
 # ---------- T1 生成数据 ----------
 
+
 def make_data(n_train: int = 100, n_test: int = 100, seed: int = 0) -> tuple:
     """y = 1.2x - 3.4x^2 + 5.6x^3 + 5 + 噪声，x 与噪声都取标准正态。"""
     g = torch.Generator().manual_seed(seed)
@@ -27,11 +28,13 @@ def make_data(n_train: int = 100, n_test: int = 100, seed: int = 0) -> tuple:
 
 # ---------- T2 多项式特征 ----------
 
+
 def poly_features(x: torch.Tensor, k: int) -> torch.Tensor:
     return torch.cat([x**i for i in range(1, k + 1)], dim=1)
 
 
 # ---------- 从 B06 抄来的零件 ----------
+
 
 def squared_loss(pred: torch.Tensor, y: torch.Tensor) -> torch.Tensor:
     """返回这一批的平方误差之和，与 B06 的约定一致。"""
@@ -53,10 +56,18 @@ def mean_loss(pred: torch.Tensor, y: torch.Tensor) -> float:
 
 # ---------- T3 训练并记录 ----------
 
-def train_poly(x_train: torch.Tensor, y_train: torch.Tensor,
-               x_test: torch.Tensor, y_test: torch.Tensor, k: int,
-               num_epochs: int = 100, lr: float = 0.01,
-               batch_size: int = 10, seed: int = 0) -> dict:
+
+def train_poly(
+    x_train: torch.Tensor,
+    y_train: torch.Tensor,
+    x_test: torch.Tensor,
+    y_test: torch.Tensor,
+    k: int,
+    num_epochs: int = 100,
+    lr: float = 0.01,
+    batch_size: int = 10,
+    seed: int = 0,
+) -> dict:
     g = torch.Generator().manual_seed(seed)
     X_tr = poly_features(x_train, k)
     X_te = poly_features(x_test, k)
@@ -70,7 +81,7 @@ def train_poly(x_train: torch.Tensor, y_train: torch.Tensor,
     for _ in range(num_epochs):
         order = torch.randperm(n, generator=g)
         for start in range(0, n, batch_size):
-            idx = order[start:start + batch_size]
+            idx = order[start : start + batch_size]
             loss = squared_loss(X_tr[idx] @ w + b, y_train[idx])
             loss.backward()
             sgd([w, b], lr, idx.numel())
@@ -81,6 +92,7 @@ def train_poly(x_train: torch.Tensor, y_train: torch.Tensor,
 
 
 # ---------- T4 画图 ----------
+
 
 def plot_errors(train_loss: list, test_loss: list, path: str) -> None:
     fig, ax = plt.subplots(figsize=(7, 4))
@@ -97,6 +109,7 @@ def plot_errors(train_loss: list, test_loss: list, path: str) -> None:
 
 # ---------- T5 k 折切分 ----------
 
+
 def k_fold_indices(n: int, k: int, seed: int = 0) -> list:
     g = torch.Generator().manual_seed(seed)
     order = torch.randperm(n, generator=g).tolist()
@@ -104,12 +117,13 @@ def k_fold_indices(n: int, k: int, seed: int = 0) -> list:
     parts, start = [], 0
     for i in range(k):
         size = base + (1 if i < extra else 0)
-        parts.append(sorted(order[start:start + size]))
+        parts.append(sorted(order[start : start + size]))
         start += size
     return parts
 
 
 # ---------- T6 诊断 ----------
+
 
 def diagnose(train_loss: list, test_loss: list) -> str:
     if train_loss[-1] > 0.5:
