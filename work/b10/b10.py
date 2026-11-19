@@ -47,7 +47,8 @@ def make_high_dim(
     n = n_train + n_test
     x = torch.randn(n, num_inputs, generator=g)
     noise = torch.randn(n, 1, generator=g)
-    y = 0.05 + 0.01 * x.sum() + noise
+    w_true = torch.randn(num_inputs, 1, generator=g) * 0.01
+    y = 0.05 + x @ w_true + noise
     return x[:n_train], y[:n_train], x[n_train:], y[n_train:]
 
 
@@ -163,5 +164,5 @@ def train_dropout(
             n += y.numel()
         train_loss.append(total / n)
         train_acc.append(evaluate(net, train_iter))
-        test_acc.append(evaluate(net, train_iter))
+        test_acc.append(evaluate(net, test_iter))
     return {"train_loss": train_loss, "train_acc": train_acc, "test_acc": test_acc}
