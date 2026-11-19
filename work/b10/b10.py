@@ -46,8 +46,8 @@ def make_high_dim(
     g = torch.Generator().manual_seed(seed)
     n = n_train + n_test
     x = torch.randn(n, num_inputs, generator=g)
-    noise = torch.randn(n, 1, generator=g)
-    w_true = torch.randn(num_inputs, 1, generator=g) * 0.01
+    noise = torch.randn(n, 1, generator=g) * 0.01
+    w_true = torch.randn(num_inputs, 1, generator=g)
     y = 0.05 + x @ w_true + noise
     return x[:n_train], y[:n_train], x[n_train:], y[n_train:]
 
