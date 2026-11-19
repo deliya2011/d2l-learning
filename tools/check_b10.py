@@ -110,10 +110,10 @@ def main() -> int:
     @case("T3 高维训练：lam=0 会过拟合")
     def _t3a():
         train_iter, test_iter = get_high_dim_iters(mod)
-        res = mod.train_high_dim(train_iter, test_iter, lam=0.0, num_epochs=3)
+        res = mod.train_high_dim(train_iter, test_iter, lam=0.0, num_epochs=100)
         for key in ("train_loss", "test_loss"):
             assert key in res, f"返回的字典缺 {key} 键"
-            assert len(res[key]) == 3, f"{key} 应有 3 项，得到 {len(res[key])}"
+            assert len(res[key]) == 100, f"{key} 应有 100 项，得到 {len(res[key])}"
         assert id(res["train_loss"]) != id(res["test_loss"]), "两个键不能指向同一个列表"
         tr, te = res["train_loss"][-1], res["test_loss"][-1]
         assert tr < 0.05, (
@@ -128,8 +128,8 @@ def main() -> int:
     @case("T3 高维训练：加惩罚项后测试损失下降")
     def _t3b():
         train_iter, test_iter = get_high_dim_iters(mod)
-        no_reg = mod.train_high_dim(train_iter, test_iter, lam=0.0, num_epochs=3)
-        reg = mod.train_high_dim(train_iter, test_iter, lam=3.0, num_epochs=3)
+        no_reg = mod.train_high_dim(train_iter, test_iter, lam=0.0, num_epochs=100)
+        reg = mod.train_high_dim(train_iter, test_iter, lam=3.0, num_epochs=100)
         te_no, te_reg = no_reg["test_loss"][-1], reg["test_loss"][-1]
         assert te_reg < te_no, (
             f"加惩罚项后测试损失应更低，得到 lam=0 时 {te_no:.4f}、lam=3 时 {te_reg:.4f}。"
