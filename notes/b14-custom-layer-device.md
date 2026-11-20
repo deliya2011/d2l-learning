@@ -297,8 +297,8 @@ but found at least two devices, cuda:0 and cpu!
 
 实测（RTX 4070 SUPER，本机）：
 
-| 运算 | CPU | GPU |
-|---|---|---|
+| 运算             | CPU   | GPU     |
+| -------------- | ----- | ------- |
 | 2000×2000 矩阵乘法 | 16 ms | 34.8 ms |
 
 **GPU 反而慢一倍。** 原因是 CUDA 调用有固定开销——内核启动、传输、
