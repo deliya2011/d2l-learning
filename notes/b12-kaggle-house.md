@@ -242,6 +242,26 @@ def log_rmse(preds, labels):
 
 **注意 `labels` 不用 clip**——真实价格都是正数。
 
+## 版本差异：pandas 3.x 的字符串 dtype
+
+书上用 `all_features.dtypes != "object"` 挑数值列。这在 pandas 1.x/2.x 下成立，
+但 **pandas 3.0 起，字符串列的 dtype 是 `str`，不再是 `object`**，于是这行会把文本列
+也当成数值列，随后 `x.mean()` 报 `TypeError: Cannot perform reduction 'mean' with string dtype`。
+
+本仓库的 pandas 是 3.x，所以改用按“是否数值”筛选，不依赖 dtype 名字：
+
+```python
+numeric_features = all_features.select_dtypes(include="number").columns
+```
+
+等价写法：
+
+```python
+numeric_features = all_features.columns[
+    all_features.dtypes.apply(pd.api.types.is_numeric_dtype)
+]
+```
+
 ## 4 训练
 
 ### 4.1 模型
