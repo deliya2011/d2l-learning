@@ -30,7 +30,8 @@ def preprocess(
     # 用fillna填缺失值，由于标准化后均值为0，所以全填0
     all_features = pd.get_dummies(all_features, dummy_na=True)
     # 独热编码，让缺失值单独成为一个类别
-
+    train_features = torch.tensor(all_features[:n_train].to_numpy(dtype="float32"))
+    test_features = torch.tensor(all_features[n_train:].to_numpy(dtype="float32"))
     train_features = torch.tensor(all_features[:n_train].values, dtype=torch.float32)
     test_features = torch.tensor(all_features[n_train:].values, dtype=torch.float32)
     train_labels = torch.tensor(
