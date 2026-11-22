@@ -20,7 +20,7 @@ def preprocess(
     n_train = train_data.shape[0]
     all_features = pd.concat((train_data.iloc[:, 1:-1], test_data.iloc[:, 1:]))
     # 去掉Id和SalePrice列，方便模型学习，合并特征，因为后面标准化与one-hot都要用全部数据的统计量
-    numeric_features = all_features.dtypes[all_features.dtypes != "object"].index
+    numeric_features = all_features.select_dtypes(include="number").columns
     # 挑出数值列
     all_features[numeric_features] = all_features[numeric_features].apply(
         lambda x: (x - x.mean()) / (x.std())
