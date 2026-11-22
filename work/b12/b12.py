@@ -32,8 +32,6 @@ def preprocess(
     # 独热编码，让缺失值单独成为一个类别
     train_features = torch.tensor(all_features[:n_train].to_numpy(dtype="float32"))
     test_features = torch.tensor(all_features[n_train:].to_numpy(dtype="float32"))
-    train_features = torch.tensor(all_features[:n_train].values, dtype=torch.float32)
-    test_features = torch.tensor(all_features[n_train:].values, dtype=torch.float32)
     train_labels = torch.tensor(
         train_data["SalePrice"].values, dtype=torch.float32
     ).reshape(-1, 1)
