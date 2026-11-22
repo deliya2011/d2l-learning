@@ -13,10 +13,11 @@ import torch
 import torch.nn as nn
 from torch.utils.data import DataLoader, TensorDataset
 
-REPO = Path.cwd()   # 需要在仓库根目录运行；从 __file__ 推在拷到别处时会错
+REPO = Path.cwd()  # 需要在仓库根目录运行；从 __file__ 推在拷到别处时会错
 
 
 # ---------- T1 读数据 ----------
+
 
 def load_houses(csv_dir: str = "data") -> tuple[pd.DataFrame, pd.DataFrame]:
     train = pd.read_csv(f"{csv_dir}/kaggle_house_pred_train.csv")
@@ -26,8 +27,10 @@ def load_houses(csv_dir: str = "data") -> tuple[pd.DataFrame, pd.DataFrame]:
 
 # ---------- T2 预处理 ----------
 
-def preprocess(train_data: pd.DataFrame, test_data: pd.DataFrame
-               ) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
+
+def preprocess(
+    train_data: pd.DataFrame, test_data: pd.DataFrame
+) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
     n_train = train_data.shape[0]
 
     # 去掉 Id（第 0 列）与标签（最后一列）；测试集没有标签，所以到末尾
@@ -58,6 +61,7 @@ def preprocess(train_data: pd.DataFrame, test_data: pd.DataFrame
 
 # ---------- T3 对数均方根误差 ----------
 
+
 def log_rmse(preds: torch.Tensor, labels: torch.Tensor) -> float:
     # log 0 会得到 -inf，负数会得到 nan，所以先截到不小于 1
     clipped = torch.clamp(preds, min=1.0)
@@ -67,19 +71,28 @@ def log_rmse(preds: torch.Tensor, labels: torch.Tensor) -> float:
 
 # ---------- T4 训练 ----------
 
+
 def get_net(num_features: int = 331):
     return nn.Sequential(nn.Linear(num_features, 1))
 
 
-def train(net: nn.Module,
-          train_features: torch.Tensor, train_labels: torch.Tensor,
-          test_features: torch.Tensor | None, test_labels: torch.Tensor | None,
-          num_epochs: int, lr: float, weight_decay: float,
-          batch_size: int) -> tuple[list[float], list[float]]:
+def train(
+    net: nn.Module,
+    train_features: torch.Tensor,
+    train_labels: torch.Tensor,
+    test_features: torch.Tensor | None,
+    test_labels: torch.Tensor | None,
+    num_epochs: int,
+    lr: float,
+    weight_decay: float,
+    batch_size: int,
+) -> tuple[list[float], list[float]]:
     g = torch.Generator().manual_seed(0)
     train_iter = DataLoader(
         TensorDataset(train_features, train_labels),
-        batch_size=batch_size, shuffle=True, generator=g,
+        batch_size=batch_size,
+        shuffle=True,
+        generator=g,
     )
     loss_fn = nn.MSELoss()
     optimizer = torch.optim.Adam(net.parameters(), lr=lr, weight_decay=weight_decay)
@@ -101,8 +114,10 @@ def train(net: nn.Module,
 
 # ---------- T5 k 折 ----------
 
-def get_k_fold_data(k: int, i: int, X: torch.Tensor, y: torch.Tensor
-                    ) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor]:
+
+def get_k_fold_data(
+    k: int, i: int, X: torch.Tensor, y: torch.Tensor
+) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor]:
     assert k > 1, "k 至少是 2"
     n = X.shape[0]
     base, extra = divmod(n, k)
@@ -122,9 +137,15 @@ def get_k_fold_data(k: int, i: int, X: torch.Tensor, y: torch.Tensor
     return train_x, train_y, valid_x, valid_y
 
 
-def k_fold(k: int, X: torch.Tensor, y: torch.Tensor, num_epochs: int,
-           lr: float, weight_decay: float, batch_size: int
-           ) -> tuple[float, float]:
+def k_fold(
+    k: int,
+    X: torch.Tensor,
+    y: torch.Tensor,
+    num_epochs: int,
+    lr: float,
+    weight_decay: float,
+    batch_size: int,
+) -> tuple[float, float]:
     train_sum, valid_sum = 0.0, 0.0
     for i in range(k):
         tx, ty, vx, vy = get_k_fold_data(k, i, X, y)
@@ -139,25 +160,39 @@ def k_fold(k: int, X: torch.Tensor, y: torch.Tensor, num_epochs: int,
 
 # ---------- T6 预测与提交 ----------
 
-def train_and_pred(train_features: torch.Tensor,
-                   test_features: torch.Tensor,
-                   train_labels: torch.Tensor,
-                   test_data: pd.DataFrame,
-                   num_epochs: int, lr: float, weight_decay: float,
-                   batch_size: int) -> pd.DataFrame:
+
+def train_and_pred(
+    train_features: torch.Tensor,
+    test_features: torch.Tensor,
+    train_labels: torch.Tensor,
+    test_data: pd.DataFrame,
+    num_epochs: int,
+    lr: float,
+    weight_decay: float,
+    batch_size: int,
+) -> pd.DataFrame:
     net = get_net(train_features.shape[1])
     train_ls, _ = train(
-        net, train_features, train_labels, None, None,
-        num_epochs, lr, weight_decay, batch_size,
+        net,
+        train_features,
+        train_labels,
+        None,
+        None,
+        num_epochs,
+        lr,
+        weight_decay,
+        batch_size,
     )
     net.eval()
     with torch.no_grad():
         preds = net(test_features).squeeze(1).numpy()
 
-    submission = pd.DataFrame({
-        "Id": test_data["Id"].values,
-        "SalePrice": preds,
-    })
+    submission = pd.DataFrame(
+        {
+            "Id": test_data["Id"].values,
+            "SalePrice": preds,
+        }
+    )
     out_dir = REPO / "work" / "b12"
     out_dir.mkdir(parents=True, exist_ok=True)
     submission.to_csv(out_dir / "submission.csv", index=False)
@@ -196,13 +231,23 @@ if __name__ == "__main__":
 
     tr_x, te_x, tr_y = preprocess(train_data, test_data)
     print("预处理后", tuple(tr_x.shape), tuple(te_x.shape), tuple(tr_y.shape))
-    print("数值特征均值范围", round(tr_x.mean().item(), 3), " 有 nan 吗：", torch.isnan(tr_x).any().item())
+    print(
+        "数值特征均值范围",
+        round(tr_x.mean().item(), 3),
+        " 有 nan 吗：",
+        torch.isnan(tr_x).any().item(),
+    )
     print("标签均值", round(tr_y.mean().item(), 1))
 
     # 用随机预测检验 log_rmse
     fake = tr_y.clone()
     print("log_rmse(真值, 真值) =", log_rmse(fake, tr_y))
-    print("log_rmse(真值*2, 真值) =", round(log_rmse(fake * 2, tr_y), 4), " 应为 log(2) =", round(torch.log(torch.tensor(2.0)).item(), 4))
+    print(
+        "log_rmse(真值*2, 真值) =",
+        round(log_rmse(fake * 2, tr_y), 4),
+        " 应为 log(2) =",
+        round(torch.log(torch.tensor(2.0)).item(), 4),
+    )
 
     # 训练一小会儿看趋势
     net = get_net(tr_x.shape[1])
