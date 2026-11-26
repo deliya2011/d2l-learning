@@ -71,3 +71,12 @@ just --list                         # 看全部命令
 - [`notes/chapter-map.md`](notes/chapter-map.md) 纸质书与第二版电子版的逐节对照，第二版多出来的章节都标了
 - [`notes/d2lzh-unlock-table.md`](notes/d2lzh-unlock-table.md) 书上"已封装好、以后直接用"的完整清单
 - [`AGENTS.md`](AGENTS.md) 私教的工作规则
+
+## 许可与来源
+
+- **代码**（`work/`、`tools/`、`solutions/`）：MIT License，版权 2026 Vesperon
+- **文档与讲义**（`notes/`、`exercises/`、`learning-notes/`、`log/`）：CC BY-SA 4.0，版权 2026 Vesperon
+- **部分内容改编自** [Qaaxaap/d2l-learning](https://github.com/Qaaxaap/d2l-learning)：
+  代码沿用 MIT（Copyright (c) 2026 Qaaxaap），文档沿用 CC BY-SA 4.0
+
+全文见 `LICENSE` 与 `LICENSE-docs`。
